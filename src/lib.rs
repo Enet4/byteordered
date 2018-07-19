@@ -10,8 +10,9 @@
 //! # Examples
 //!
 //! ```no_run
-//! # extern crate byteorder;
-//! # extern crate byteorder_runtime;
+//! extern crate byteorder;
+//! extern crate byteorder_runtime;
+//! 
 //! use byteorder::ReadBytesExt;
 //! use byteorder_runtime::{BE, LE};
 //! # use std::error::Error;
@@ -29,7 +30,9 @@
 //! let value: u32 = endianness.read_u32(&mut data)?;
 //! # Ok(())
 //! # }
+//! # fn main() {
 //! # run().unwrap();
+//! # }
 //! ```
 //!
 //! [`byteorder`]: ../byteorder/index.html
