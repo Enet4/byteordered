@@ -167,16 +167,16 @@ impl Endianness {
 #[cfg(test)]
 mod tests {
     use super::*;
-    static TEST_BYTES: &[u8] = &[0x12, 0x34, 0x56, 0x78, 0x21, 0x43, 0x65, 0x87];
+    static TEST_BYTES: &'static [u8] = &[0x12, 0x34, 0x56, 0x78, 0x21, 0x43, 0x65, 0x87];
 
     #[cfg(target_endian = "big")]
-    static TEST_U32DATA_1: &[u32] = &[0x1234_5678, 0x2143_6587];
+    static TEST_U32DATA_1: &'static [u32] = &[0x1234_5678, 0x2143_6587];
     #[cfg(target_endian = "big")]
-    static TEST_U32DATA_2: &[u32] = &[0x7856_3412, 0x8765_4321];
+    static TEST_U32DATA_2: &'static [u32] = &[0x7856_3412, 0x8765_4321];
     #[cfg(target_endian = "little")]
-    static TEST_U32DATA_1: &[u32] = &[0x7856_3412, 0x8765_4321];
+    static TEST_U32DATA_1: &'static [u32] = &[0x7856_3412, 0x8765_4321];
     #[cfg(target_endian = "little")]
-    static TEST_U32DATA_2: &[u32] = &[0x1234_5678, 0x2143_6587];
+    static TEST_U32DATA_2: &'static [u32] = &[0x1234_5678, 0x2143_6587];
 
     #[test]
     fn test_u32() {
