@@ -166,5 +166,34 @@ impl Endianness {
 
 #[cfg(test)]
 mod tests {
-    // TODO write tests
+    use super::*;
+    static TEST_BYTES: &[u8] = &[0x12, 0x34, 0x56, 0x78, 0x21, 0x43, 0x65, 0x87];
+
+    #[cfg(target_endian = "big")]
+    static TEST_U32DATA_1: &[u32] = &[0x1234_5678, 0x2143_6587];
+    #[cfg(target_endian = "big")]
+    static TEST_U32DATA_2: &[u32] = &[0x7856_3412, 0x8765_4321];
+    #[cfg(target_endian = "little")]
+    static TEST_U32DATA_1: &[u32] = &[0x7856_3412, 0x8765_4321];
+    #[cfg(target_endian = "little")]
+    static TEST_U32DATA_2: &[u32] = &[0x1234_5678, 0x2143_6587];
+
+    #[test]
+    fn test_u32() {
+        let mut data = TEST_BYTES;
+        let e = Endianness::Little;
+        let words = [
+            e.read_u32(&mut data).unwrap(),
+            e.read_u32(&mut data).unwrap(),
+        ];
+        assert_eq!(words, TEST_U32DATA_1);
+
+        let mut data = TEST_BYTES;
+        let e = Endianness::Big;
+        let words = [
+            e.read_u32(&mut data).unwrap(),
+            e.read_u32(&mut data).unwrap(),
+        ];
+        assert_eq!(words, TEST_U32DATA_2);
+    }
 }
