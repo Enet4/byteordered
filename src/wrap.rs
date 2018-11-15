@@ -20,7 +20,7 @@ where
 {
     fn new_default(inner: T) -> Self {
         ByteOrdered {
-            inner,
+            inner: inner,
             endianness: Default::default(),
         }
     }
@@ -80,7 +80,10 @@ impl<T> ByteOrdered<T, Endianness> {
     /// Creates a new reader or writer that assumes the given byte order
     /// that is only known at run-time.  
     pub fn runtime(inner: T, endianness: Endianness) -> Self {
-        ByteOrdered { inner, endianness }
+        ByteOrdered {
+            inner: inner,
+            endianness: endianness,
+        }
     }
 
     /// Converts the assumed endianness to the opposite of the current order.
@@ -111,7 +114,7 @@ where
     pub fn into_endianness<E2: Endian>(self, endianness: E2) -> ByteOrdered<T, E2> {
         ByteOrdered {
             inner: self.inner,
-            endianness,
+            endianness: endianness,
         }
     }
 
@@ -531,8 +534,8 @@ where
 #[cfg(test)]
 mod tests {
     // TODO test moar
-
-    use super::*;
+    use base::Endianness;
+    use super::ByteOrdered;
     static TEST_BYTES: &'static [u8] = &[0x12, 0x34, 0x56, 0x78, 0x21, 0x43, 0x65, 0x87];
 
     static TEST_U64DATA_LE: &'static [u64] = &[0x87654321_78563412];
