@@ -121,36 +121,117 @@ pub trait Endian {
     where
         R: Read;
 
-    fn write_i16<W>(&self, writer: W, x: i16) -> IoResult<()>
+    /// Writes a signed 16 bit integer to the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    fn write_i16<W>(&self, writer: W, v: i16) -> IoResult<()>
     where
         W: Write;
-    fn write_u16<W>(&self, writer: W, x: u16) -> IoResult<()>
+
+    /// Writes an unsigned 16 bit integer to the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    fn write_u16<W>(&self, writer: W, v: u16) -> IoResult<()>
     where
         W: Write;
-    fn write_i32<W>(&self, writer: W, x: i32) -> IoResult<()>
+
+    /// Writes a signed 32 bit integer to the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    fn write_i32<W>(&self, writer: W, v: i32) -> IoResult<()>
     where
         W: Write;
-    fn write_u32<W>(&self, writer: W, x: u32) -> IoResult<()>
+
+    /// Writes an unsigned 32 bit integer to the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    fn write_u32<W>(&self, writer: W, v: u32) -> IoResult<()>
     where
         W: Write;
-    fn write_i64<W>(&self, writer: W, x: i64) -> IoResult<()>
+
+    /// Writes a signed 64 bit integer to the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    fn write_i64<W>(&self, writer: W, v: i64) -> IoResult<()>
     where
         W: Write;
-    fn write_u64<W>(&self, writer: W, x: u64) -> IoResult<()>
+
+    /// Writes an unsigned 64 bit integer to the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    fn write_u64<W>(&self, writer: W, v: u64) -> IoResult<()>
     where
         W: Write;
+
+    /// Writes a signed 128 bit integer to the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     #[cfg(features = "i128")]
-    fn write_i128<W>(&self, writer: W, x: i128) -> IoResult<()>
+    fn write_i128<W>(&self, writer: W, v: i128) -> IoResult<()>
     where
         W: Write;
+
+    /// Writes an unsigned 128 bit integer to the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     #[cfg(features = "i128")]
-    fn write_u128<W>(&self, writer: W, x: u128) -> IoResult<()>
+    fn write_u128<W>(&self, writer: W, v: u128) -> IoResult<()>
     where
         W: Write;
-    fn write_f32<W>(&self, writer: W, x: f32) -> IoResult<()>
+
+    /// Writes a IEEE754 single-precision (4 bytes) floating point number to
+    /// the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    fn write_f32<W>(&self, writer: W, v: f32) -> IoResult<()>
     where
         W: Write;
-    fn write_f64<W>(&self, writer: W, x: f64) -> IoResult<()>
+
+    /// Writes a IEEE754 double-precision (8 bytes) floating point number to
+    /// the given writer.
+    /// 
+    /// # Errors
+    /// 
+    /// This method returns the same errors as [`Write::write_all`].
+    /// 
+    /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    fn write_f64<W>(&self, writer: W, v: f64) -> IoResult<()>
     where
         W: Write;
 }
