@@ -169,6 +169,26 @@ mod tests {
     use super::*;
     static TEST_BYTES: &'static [u8] = &[0x12, 0x34, 0x56, 0x78, 0x21, 0x43, 0x65, 0x87];
 
+    static TEST_U64DATA_LE: &'static [u64] = &[0x87654321_78563412];
+    static TEST_U64DATA_BE: &'static [u64] = &[0x12345678_21436587];
+
+    #[test]
+    fn test_u64() {
+        let mut data = TEST_BYTES;
+        let e = Endianness::Little;
+        let words = [
+            e.read_u64(&mut data).unwrap(),
+        ];
+        assert_eq!(words, TEST_U64DATA_LE);
+
+        let mut data = TEST_BYTES;
+        let e = Endianness::Big;
+        let words = [
+            e.read_u64(&mut data).unwrap(),
+        ];
+        assert_eq!(words, TEST_U64DATA_BE);
+    }
+
     static TEST_U32DATA_LE: &'static [u32] = &[0x7856_3412, 0x8765_4321];
     static TEST_U32DATA_BE: &'static [u32] = &[0x1234_5678, 0x2143_6587];
 
@@ -190,4 +210,42 @@ mod tests {
         ];
         assert_eq!(words, TEST_U32DATA_BE);
     }
+
+    static TEST_U16DATA_LE: &'static [u16] = &[0x3412, 0x7856, 0x4321, 0x8765];
+    static TEST_U16DATA_BE: &'static [u16] = &[0x1234, 0x5678, 0x2143, 0x6587];
+
+    #[test]
+    fn test_u16() {
+        let mut data = TEST_BYTES;
+        let e = Endianness::Little;
+        let words = [
+            e.read_u16(&mut data).unwrap(),
+            e.read_u16(&mut data).unwrap(),
+            e.read_u16(&mut data).unwrap(),
+            e.read_u16(&mut data).unwrap(),
+        ];
+        assert_eq!(words, TEST_U16DATA_LE);
+
+        let mut data = TEST_BYTES;
+        let e = Endianness::Big;
+        let words = [
+            e.read_u16(&mut data).unwrap(),
+            e.read_u16(&mut data).unwrap(),
+            e.read_u16(&mut data).unwrap(),
+            e.read_u16(&mut data).unwrap(),
+        ];
+        assert_eq!(words, TEST_U16DATA_BE);
+    }
+
+    #[test]
+    fn test_native_is_le() {
+        if cfg!(target_endian = "little") {
+            assert_eq!(Endianness::native(), Endianness::Little);
+        } else if cfg!(target_endian = "big") {
+            assert_eq!(Endianness::native(), Endianness::Big);
+        } else {
+            unreachable!();
+        }
+    }
+
 }
