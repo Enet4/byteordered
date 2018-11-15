@@ -1,18 +1,223 @@
 //! Base Endianness type module.
 
-use byteorder::{BigEndian, LittleEndian, ReadBytesExt, WriteBytesExt};
+use byteorder::{BigEndian, ByteOrder, LittleEndian, ReadBytesExt, WriteBytesExt};
+use std::default::Default;
 use std::io::{Read, Result as IoResult, Write};
+use std::marker::PhantomData;
 
 /// General trait for types representing a byte order.
-pub trait Endian {}
+pub trait Endian {
+    /// Reads a signed 16 bit integer from the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    fn read_i16<R>(&self, reader: R) -> IoResult<i16>
+    where
+        R: Read;
 
-/// A data type representing the Little Endian byte order.
+    /// Reads an unsigned 16 bit integer from the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    fn read_u16<R>(&self, reader: R) -> IoResult<u16>
+    where
+        R: Read;
+
+    /// Reads a signed 32 bit integer from the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    fn read_i32<R>(&self, reader: R) -> IoResult<i32>
+    where
+        R: Read;
+
+    /// Reads an unsigned 32 bit integer from the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    fn read_u32<R>(&self, reader: R) -> IoResult<u32>
+    where
+        R: Read;
+
+    /// Reads a signed 64 bit integer from the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    fn read_i64<R>(&self, reader: R) -> IoResult<i64>
+    where
+        R: Read;
+
+    /// Reads an unsigned 16 bit integer from the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    fn read_u64<R>(&self, reader: R) -> IoResult<u64>
+    where
+        R: Read;
+
+    /// Reads a signed 128 bit integer from the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[cfg(feature = "i128")]
+    fn read_i128<R>(&self, reader: R) -> IoResult<i128>
+    where
+        R: Read;
+
+    /// Reads an unsigned 16 bit integer from the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[cfg(feature = "i128")]
+    fn read_u128<R>(&self, reader: R) -> IoResult<u128>
+    where
+        R: Read;
+
+    /// Reads a IEEE754 single-precision (4 bytes) floating point number from
+    /// the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    fn read_f32<R>(&self, reader: R) -> IoResult<f32>
+    where
+        R: Read;
+
+    /// Reads a IEEE754 double-precision (8 bytes) floating point number from
+    /// the given reader.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    fn read_f64<R>(&self, reader: R) -> IoResult<f64>
+    where
+        R: Read;
+
+    fn write_i16<W>(&self, writer: W, x: i16) -> IoResult<()>
+    where
+        W: Write;
+    fn write_u16<W>(&self, writer: W, x: u16) -> IoResult<()>
+    where
+        W: Write;
+    fn write_i32<W>(&self, writer: W, x: i32) -> IoResult<()>
+    where
+        W: Write;
+    fn write_u32<W>(&self, writer: W, x: u32) -> IoResult<()>
+    where
+        W: Write;
+    fn write_i64<W>(&self, writer: W, x: i64) -> IoResult<()>
+    where
+        W: Write;
+    fn write_u64<W>(&self, writer: W, x: u64) -> IoResult<()>
+    where
+        W: Write;
+    #[cfg(features = "i128")]
+    fn write_i128<W>(&self, writer: W, x: i128) -> IoResult<()>
+    where
+        W: Write;
+    #[cfg(features = "i128")]
+    fn write_u128<W>(&self, writer: W, x: u128) -> IoResult<()>
+    where
+        W: Write;
+    fn write_f32<W>(&self, writer: W, x: f32) -> IoResult<()>
+    where
+        W: Write;
+    fn write_f64<W>(&self, writer: W, x: f64) -> IoResult<()>
+    where
+        W: Write;
+}
+
+/// A data type representing a byte order known in compile time.
 /// Unlike `byteorder::LittleEndian`, this type has a default constructor.
-#[derive(Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub struct LittleEndianness;
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd)]
+pub struct StaticEndianness<E>(PhantomData<E>);
 
-impl Endian for LittleEndianness {}
-impl Endian for BigEndianness {}
+impl<E> Default for StaticEndianness<E> {
+    fn default() -> Self {
+        StaticEndianness(PhantomData)
+    }
+}
+
+macro_rules! fn_static_endianness_read {
+    ($method:ident, $e:ty, $out:ty) => {
+        fn $method<S>(&self, mut src: S) -> IoResult<$out>
+        where
+            S: Read,
+        {
+            src.$method::< $e >()
+        }
+    };
+}
+
+macro_rules! fn_static_endianness_write {
+    ($method:ident, $e:ty, $out:ty) => {
+        fn $method<W>(&self, mut src: W, x: $out) -> IoResult<()>
+        where
+            W: Write,
+        {
+            src.$method::< $e >(x)
+        }
+    };
+}
+
+impl<E> Endian for StaticEndianness<E>
+where
+    E: ByteOrder,
+{
+    fn_static_endianness_read!(read_i16, E, i16);
+    fn_static_endianness_read!(read_u16, E, u16);
+    fn_static_endianness_read!(read_i32, E, i32);
+    fn_static_endianness_read!(read_u32, E, u32);
+    fn_static_endianness_read!(read_i64, E, i64);
+    fn_static_endianness_read!(read_u64, E, u64);
+    #[cfg(feature = "i128")]
+    fn_static_endianness_read!(read_i128, E, i128);
+    #[cfg(feature = "i128")]
+    fn_static_endianness_read!(read_u128, E, u128);
+    fn_static_endianness_read!(read_f32, E, f32);
+    fn_static_endianness_read!(read_f64, E, f64);
+
+    fn_static_endianness_write!(write_i16, E, i16);
+    fn_static_endianness_write!(write_u16, E, u16);
+    fn_static_endianness_write!(write_i32, E, i32);
+    fn_static_endianness_write!(write_u32, E, u32);
+    fn_static_endianness_write!(write_i64, E, i64);
+    fn_static_endianness_write!(write_u64, E, u64);
+    #[cfg(feature = "i128")]
+    fn_static_endianness_write!(write_i128, E, i128);
+    #[cfg(feature = "i128")]
+    fn_static_endianness_write!(write_u128, E, u128);
+    fn_static_endianness_write!(write_f32, E, f32);
+    fn_static_endianness_write!(write_f64, E, f64);
+}
 
 /// A data type representing the Big Endian byte order.
 /// Unlike `byteorder::BigEndian`, this type has a default constructor.
@@ -29,79 +234,74 @@ pub enum Endianness {
     Big,
 }
 
-impl From<LittleEndianness> for Endianness {
-    fn from(_: LittleEndianness) -> Self {
+impl From<StaticEndianness<LittleEndian>> for Endianness {
+    fn from(_: StaticEndianness<LittleEndian>) -> Self {
         Endianness::Little
     }
 }
 
-impl From<BigEndianness> for Endianness {
-    fn from(_: BigEndianness) -> Self {
+impl From<StaticEndianness<BigEndian>> for Endianness {
+    fn from(_: StaticEndianness<BigEndian>) -> Self {
         Endianness::Big
     }
 }
 
-impl Endian for Endianness {}
-
-macro_rules! impl_endianness_read {
+macro_rules! fn_runtime_endianness_read {
     ($method:ident, $out:ty) => {
-        impl Endianness {
-            /// Read a primitive value with this endianness from the given source.
-            pub fn $method<S>(&self, mut src: S) -> IoResult<$out>
-            where
-                S: Read,
-            {
-                match *self {
-                    Endianness::Little => src.$method::<LittleEndian>(),
-                    Endianness::Big => src.$method::<BigEndian>(),
-                }
+        /// Read a primitive value with this endianness from the given source.
+        fn $method<S>(&self, mut src: S) -> IoResult<$out>
+        where
+            S: Read,
+        {
+            match *self {
+                Endianness::Little => src.$method::<LittleEndian>(),
+                Endianness::Big => src.$method::<BigEndian>(),
             }
         }
     };
 }
 
-impl_endianness_read!(read_i16, i16);
-impl_endianness_read!(read_u16, u16);
-impl_endianness_read!(read_i32, i32);
-impl_endianness_read!(read_u32, u32);
-impl_endianness_read!(read_i64, i64);
-impl_endianness_read!(read_u64, u64);
-impl_endianness_read!(read_f32, f32);
-impl_endianness_read!(read_f64, f64);
-#[cfg(feature = "i128")]
-impl_endianness_read!(read_i128, i128);
-#[cfg(feature = "i128")]
-impl_endianness_read!(read_u128, u128);
-
-macro_rules! impl_endianness_write {
+macro_rules! fn_runtime_endianness_write {
     ($method:ident, $i:ty) => {
-        impl Endianness {
-            /// Write a primitive value with this endianness to the given write source.
-            pub fn $method<S>(&self, mut src: S, v: $i) -> IoResult<()>
-            where
-                S: Write,
-            {
-                match *self {
-                    Endianness::Little => src.$method::<LittleEndian>(v),
-                    Endianness::Big => src.$method::<BigEndian>(v),
-                }
+        fn $method<S>(&self, mut src: S, v: $i) -> IoResult<()>
+        where
+            S: Write,
+        {
+            match *self {
+                Endianness::Little => src.$method::<LittleEndian>(v),
+                Endianness::Big => src.$method::<BigEndian>(v),
             }
         }
     };
 }
 
-impl_endianness_write!(write_i16, i16);
-impl_endianness_write!(write_u16, u16);
-impl_endianness_write!(write_i32, i32);
-impl_endianness_write!(write_u32, u32);
-impl_endianness_write!(write_i64, i64);
-impl_endianness_write!(write_u64, u64);
-impl_endianness_write!(write_f32, f32);
-impl_endianness_write!(write_f64, f64);
-#[cfg(feature = "i128")]
-impl_endianness_write!(write_i128, i128);
-#[cfg(feature = "i128")]
-impl_endianness_write!(write_u128, u128);
+impl Endian for Endianness {
+    fn_runtime_endianness_read!(read_i16, i16);
+    fn_runtime_endianness_read!(read_u16, u16);
+    fn_runtime_endianness_read!(read_i32, i32);
+    fn_runtime_endianness_read!(read_u32, u32);
+    fn_runtime_endianness_read!(read_i64, i64);
+    fn_runtime_endianness_read!(read_u64, u64);
+    fn_runtime_endianness_read!(read_f32, f32);
+    fn_runtime_endianness_read!(read_f64, f64);
+    #[cfg(feature = "i128")]
+    fn_runtime_endianness_read!(read_i128, i128);
+    #[cfg(feature = "i128")]
+    fn_runtime_endianness_read!(read_u128, u128);
+
+    fn_runtime_endianness_write!(write_i16, i16);
+    fn_runtime_endianness_write!(write_u16, u16);
+    fn_runtime_endianness_write!(write_i32, i32);
+    fn_runtime_endianness_write!(write_u32, u32);
+    fn_runtime_endianness_write!(write_i64, i64);
+    fn_runtime_endianness_write!(write_u64, u64);
+    fn_runtime_endianness_write!(write_f32, f32);
+    fn_runtime_endianness_write!(write_f64, f64);
+    #[cfg(feature = "i128")]
+    fn_runtime_endianness_write!(write_i128, i128);
+    #[cfg(feature = "i128")]
+    fn_runtime_endianness_write!(write_u128, u128);
+}
 
 impl Endianness {
     /// Obtain this system's native endianness.
@@ -142,16 +342,12 @@ mod tests {
     fn test_read_u64() {
         let mut data = TEST_BYTES;
         let e = Endianness::Little;
-        let words = [
-            e.read_u64(&mut data).unwrap(),
-        ];
+        let words = [e.read_u64(&mut data).unwrap()];
         assert_eq!(words, TEST_U64DATA_LE);
 
         let mut data = TEST_BYTES;
         let e = Endianness::Big;
-        let words = [
-            e.read_u64(&mut data).unwrap(),
-        ];
+        let words = [e.read_u64(&mut data).unwrap()];
         assert_eq!(words, TEST_U64DATA_BE);
     }
 
