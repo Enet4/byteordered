@@ -70,6 +70,12 @@
 //! # }
 //! ```
 //!
+//! # Features
+//!
+//! `i128` enables reading and writing 128-bit integers, as in the `byteorder`
+//! crate. This library currently requires the standard library (`no_std` is
+//! not supported). 
+//!
 //! [`byteorder`]: ../byteorder/index.html
 //! [`Endianness`]: enum.Endianness.html
 //! [`ByteOrdered`]: struct.ByteOrdered.html
