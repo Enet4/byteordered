@@ -58,12 +58,12 @@
 //! // choose to read the following data in Little Endian if it's 0,
 //! // otherwise read in Big Endian (what happens in this case)
 //! let mut wt = ByteOrdered::runtime(Vec::new(), if b == 0 { LE } else { BE });
-//! // write in this byte order, 
-//! wt.write_u16(0x00C0)?;
+//! // write in this byte order
+//! wt.write_u16(0xC000)?;
 //! wt.write_u32(0)?;
 //! // then invert the byte order
 //! let mut wt = wt.into_opposite();
-//! wt.write_u16(0xFFEE)?;
+//! wt.write_u16(0xEEFF)?;
 //! assert_eq!(&*wt.into_inner(), &[0xC0, 0, 0, 0, 0, 0, 0xFF, 0xEE]);
 //! # Ok(())
 //! # }
