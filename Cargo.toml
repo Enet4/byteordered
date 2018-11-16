@@ -14,9 +14,7 @@ repository = "https://github.com/Enet4/byteorder-runtime"
 byteorder = "1.0.0"
 
 [features]
-default = ["std"]
 i128 = ["byteorder/i128"]
-std = ["byteorder/std"]
 
 [badges.travis-ci]
 branch = "master"
