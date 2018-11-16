@@ -21,13 +21,13 @@ An example follows. Please see [the documentation](https://docs.rs/byteorder-run
 ```rust
 use byteorder_runtime::{ByteOrdered, BE, LE};
 
-let mut data = get_data_source()?;
+let mut rd = ByteOrdered::le(get_data_source()?);
 // read 1st byte
-let b1 = data.read_u8()?;
+let b1 = rd.read_u8()?;
 // choose to read the following data in Little Endian if it's 0,
 // otherwise read in Big Endian
 let endianness = if b1 != 0 { LE } else { BE };
-let mut rd = ByteOrdered::runtime(data, endianness);
+let mut rd = rd.into_endianness(endianness);
 let value: u32 = rd.read_u32()?;
 ```
 
