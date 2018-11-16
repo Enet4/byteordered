@@ -12,10 +12,35 @@
 //! for run-time information only known at run-time.
 //!
 //! # Examples
-//!
-//! Both crates work well side by side.
-//!
+//! 
 //! ```no_run
+//! extern crate byteorder_runtime;
+//!
+//! use byteorder_runtime::{ByteOrdered, BE, LE, Endian};
+//! # use std::error::Error;
+//! # use std::io::Read;
+//!
+//! # fn get_data_source() -> Result<Box<Read>, Box<Error>> { unimplemented!() }
+//!
+//! # fn run() -> Result<(), Box<Error>> {
+//! let mut rd = ByteOrdered::le(get_data_source()?); // little endian
+//! // read a u16
+//! let w = rd.read_u16()?;
+//! // choose to read the following data in Little Endian if it's
+//! // smaller than 256, otherwise read in Big Endian
+//! let mut rd = rd.into_endianness(if w < 256 { LE } else { BE });
+//! let value: u32 = rd.read_u32()?;
+//! # Ok(())
+//! # }
+//! # fn main() {
+//! # run().unwrap();
+//! # }
+//! ```
+//!
+//! Both crates work well side by side. You can use `byteorder` in one part of
+//! the routine, and wrap the reader or writer when deemed useful.
+//!
+//! ```
 //! extern crate byteorder;
 //! extern crate byteorder_runtime;
 //!
@@ -27,14 +52,17 @@
 //! # fn get_data_source() -> Result<Box<Read>, Box<Error>> { unimplemented!() }
 //!
 //! # fn run() -> Result<(), Box<Error>> {
-//! let mut data = get_data_source()?;
-//! // read 1st byte
-//! let b1 = data.read_u8()?;
+//! let b = 5;
 //! // choose to read the following data in Little Endian if it's 0,
 //! // otherwise read in Big Endian
-//! let endianness = if b1 != 0 { LE } else { BE };
-//! let mut rd = ByteOrdered::runtime(data, endianness);
-//! let value: u32 = rd.read_u32()?;
+//! let mut wt = ByteOrdered::runtime(Vec::new(), if b < 256 { LE } else { BE });
+//! // write in this byte order, 
+//! wt.write_u16(0x00C0)?;
+//! wt.write_u32(0)?;
+//! // then invert the byte order
+//! let mut wt = wt.into_opposite();
+//! wt.write_u16(0xFFEE)?;
+//! assert_eq!(&*wt.into_inner(), &[0xC0, 0, 0, 0, 0, 0, 0xFF, 0xEE]);
 //! # Ok(())
 //! # }
 //! # fn main() {
