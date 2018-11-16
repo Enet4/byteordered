@@ -194,7 +194,7 @@ pub trait Endian {
     /// This method returns the same errors as [`Write::write_all`].
     /// 
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    #[cfg(features = "i128")]
+    #[cfg(feature = "i128")]
     fn write_i128<W>(&self, writer: W, v: i128) -> IoResult<()>
     where
         W: Write;
@@ -206,7 +206,7 @@ pub trait Endian {
     /// This method returns the same errors as [`Write::write_all`].
     /// 
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    #[cfg(features = "i128")]
+    #[cfg(feature = "i128")]
     fn write_u128<W>(&self, writer: W, v: u128) -> IoResult<()>
     where
         W: Write;
