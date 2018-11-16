@@ -1,15 +1,17 @@
-//! This crate provides abstractions for reading and writing data in an
-//! endianness only known at run-time. It may be regarded as an extension to
-//! [`byteorder`] for the particular case of reading data in a byte order which
-//! can only be identified during program execution, which may happen in some
-//! formats and protocols.
+//! This crate provides an alternative API for reading and writing data in an
+//! endianness that might only be known at run-time. It encapsulates the
+//! existing capabilities of the [`byteorder`] crate for the particular case of
+//! reading data in a byte order which can only be identified during program
+//! execution, which may happen in some formats and protocols. The same API
+//! can be used to reduce redundancy by indicating the intended byte order
+//! once for the entire routine, instead of one for each method call.
 //!
 //! The main contribution in this crate is the [`ByteOrdered`] wrapper type,
-//! which implicitly assigns byte order information to a data source or
-//! destination (it works for both readers and writers).
-//! Moreover, the [`Endian`] trait contains multiple primitive data reading and
-//! writing methods, and the [`Endianness`] type provides a basic enumerate
-//! for run-time information only known at run-time.
+//! which infuses byte order information to a data source or destination (it
+//! works for both readers and writers). Moreover, the [`Endian`] trait
+//! contains multiple primitive data reading and writing methods, and the
+//! [`Endianness`] type provides a basic enumerate for run-time information
+//! only known at run-time.
 //!
 //! # Examples
 //! 
@@ -54,8 +56,8 @@
 //! # fn run() -> Result<(), Box<Error>> {
 //! let b = 5;
 //! // choose to read the following data in Little Endian if it's 0,
-//! // otherwise read in Big Endian
-//! let mut wt = ByteOrdered::runtime(Vec::new(), if b < 256 { LE } else { BE });
+//! // otherwise read in Big Endian (what happens in this case)
+//! let mut wt = ByteOrdered::runtime(Vec::new(), if b == 0 { LE } else { BE });
 //! // write in this byte order, 
 //! wt.write_u16(0x00C0)?;
 //! wt.write_u32(0)?;
