@@ -1,6 +1,6 @@
 # byteorder-runtime
 
-[![Build Status](https://travis-ci.org/Enet4/byteorder-runtime.svg?branch=master)](https://travis-ci.org/Enet4/byteorder-runtime) ![Minimum Rust Version 1.14](https://img.shields.io/badge/Minimum%20Rust%20Version-1.14-brightgreen.svg)
+[![Build Status](https://travis-ci.org/Enet4/byteorder-runtime.svg?branch=master)](https://travis-ci.org/Enet4/byteorder-runtime) ![Minimum Rust Version 1.14](https://img.shields.io/badge/Minimum%20Rust%20Version-1.13-brightgreen.svg)
 
 A library for reading and writing data in some byte order.
 
