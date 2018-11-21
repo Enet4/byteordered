@@ -419,14 +419,8 @@ impl Endianness {
     /// 
     /// ```
     /// # use byteordered::Endianness;
-    /// assert_eq!(
-    ///     Endianness::le_iif(2 + 2 == 4),
-    ///     Endianness::Little,
-    /// );
-    /// assert_eq!(
-    ///     Endianness::le_iif(2 + 2 >= 5),
-    ///     Endianness::Big,
-    /// );
+    /// assert_eq!(Endianness::le_iif(2 + 2 == 4), Endianness::Little);
+    /// assert_eq!(Endianness::le_iif(2 + 2 >= 5), Endianness::Big);
     /// ```
     #[inline]
     pub fn le_iif(e: bool) -> Self {
@@ -435,18 +429,12 @@ impl Endianness {
 
     /// Obtains _Big Endian_ if and only if the given value is `true`.
     /// 
-    /// # Examples
+    /// Examples
     /// 
     /// ```
     /// # use byteordered::Endianness;
-    /// assert_eq!(
-    ///     Endianness::be_iif(2 + 2 == 4),
-    ///     Endianness::Big,
-    /// );
-    /// assert_eq!(
-    ///     Endianness::be_iif(2 + 2 >= 5),
-    ///     Endianness::Little,
-    /// );
+    /// assert_eq!(Endianness::be_iif(2 + 2 == 4), Endianness::Big);
+    /// assert_eq!(Endianness::be_iif(2 + 2 >= 5), Endianness::Little);
     /// ```
     #[inline]
     pub fn be_iif(e: bool) -> Self {
