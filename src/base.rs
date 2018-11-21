@@ -13,7 +13,7 @@ use std::marker::PhantomData;
 ///
 /// [`byteorder::ByteOrder`]: ../byteorder/trait.ByteOrder.html
 /// [`ByteOrdered`]: ../struct.ByteOrder.html
-pub trait Endian {
+pub trait Endian: private::Sealed {
     /// Reads a signed 16 bit integer from the given reader.
     ///
     /// # Errors
@@ -356,6 +356,14 @@ macro_rules! fn_runtime_endianness_write {
             }
         }
     };
+}
+
+mod private {
+    use super::{Endianness, StaticEndianness};
+    pub trait Sealed {}
+
+    impl<T> Sealed for StaticEndianness<T> {}
+    impl Sealed for Endianness {}
 }
 
 impl Endian for Endianness {
