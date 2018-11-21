@@ -16,9 +16,9 @@
 //! # Examples
 //! 
 //! ```no_run
-//! extern crate byteorder_runtime;
+//! extern crate byteordered;
 //!
-//! use byteorder_runtime::{ByteOrdered, BE, LE, Endian};
+//! use byteordered::{ByteOrdered, BE, LE, Endian};
 //! # use std::error::Error;
 //! # use std::io::Read;
 //!
@@ -44,10 +44,10 @@
 //!
 //! ```
 //! extern crate byteorder;
-//! extern crate byteorder_runtime;
+//! extern crate byteordered;
 //!
 //! use byteorder::ReadBytesExt;
-//! use byteorder_runtime::{ByteOrdered, BE, LE, Endian};
+//! use byteordered::{ByteOrdered, BE, LE, Endian};
 //! # use std::error::Error;
 //! # use std::io::Read;
 //!

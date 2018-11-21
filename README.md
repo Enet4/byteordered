@@ -1,6 +1,6 @@
-# byteorder-runtime
+# byteordered
 
-[![Build Status](https://travis-ci.org/Enet4/byteorder-runtime.svg?branch=master)](https://travis-ci.org/Enet4/byteorder-runtime) ![Minimum Rust Version 1.14](https://img.shields.io/badge/Minimum%20Rust%20Version-1.13-brightgreen.svg)
+[![Build Status](https://travis-ci.org/Enet4/byteordered.svg?branch=master)](https://travis-ci.org/Enet4/byteordered) ![Minimum Rust Version 1.14](https://img.shields.io/badge/Minimum%20Rust%20Version-1.13-brightgreen.svg)
 
 A library for reading and writing data in some byte order.
 
@@ -14,10 +14,10 @@ Rather than building yet another new library, this crates aims to provide an alt
 
 ## Using
 
-An example follows. Please see [the documentation](https://docs.rs/byteorder-runtime) for more information.
+An example follows. Please see [the documentation](https://docs.rs/byteordered) for more information.
 
 ```rust
-use byteorder_runtime::{ByteOrdered, BE, LE};
+use byteordered::{ByteOrdered, BE, LE};
 
 let mut rd = ByteOrdered::le(get_data_source()?);
 // read 1st byte
