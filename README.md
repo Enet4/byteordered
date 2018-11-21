@@ -19,7 +19,7 @@ It is currently a work in progress: the API may have sudden changes at this phas
 An example follows. Please see [the documentation](https://docs.rs/byteordered) for more information.
 
 ```rust
-use byteorder_runtime::{ByteOrdered, BE, LE};
+use byteordered::{ByteOrdered, BE, LE};
 
 let mut rd = ByteOrdered::le(get_data_source()?);
 // read 1st byte

@@ -204,7 +204,7 @@ where
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use byteorder_runtime::ByteOrdered;
+    /// use byteordered::ByteOrdered;
     ///
     /// let mut rdr = ByteOrdered::native(Cursor::new(vec![2, 5]));
     /// assert_eq!(2, rdr.read_i8().unwrap());
@@ -232,7 +232,7 @@ where
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use byteorder_runtime::ByteOrdered;
+    /// use byteordered::ByteOrdered;
     ///
     /// let mut rdr = ByteOrdered::native(Cursor::new(vec![2, 5]));
     /// assert_eq!(2, rdr.read_u8().unwrap());
@@ -256,7 +256,7 @@ where
     ///
     /// ```rust
     /// use std::io::Cursor;
-    /// use byteorder_runtime::ByteOrdered;
+    /// use byteordered::ByteOrdered;
     ///
     /// let mut rdr = ByteOrdered::be(Cursor::new(vec![0x00, 0xc1, 0xff, 0x7c]));
     /// assert_eq!(193, rdr.read_i16().unwrap());
@@ -416,7 +416,7 @@ where
     /// Write signed 16 bit big-endian integers to a `Write`:
     ///
     /// ```rust
-    /// use byteorder_runtime::ByteOrdered;
+    /// use byteordered::ByteOrdered;
     ///
     /// let mut wtr = ByteOrdered::be(Vec::new());
     /// wtr.write_i16(193).unwrap();
