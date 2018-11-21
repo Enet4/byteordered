@@ -129,7 +129,7 @@ where
         ByteOrdered::le(self.inner)
     }
 
-    /// Change the assumed byte order of the reader or writer to
+    /// Changes the assumed byte order of the reader or writer to
     /// little endian.
     pub fn into_be(self) -> ByteOrdered<T, StaticEndianness<BigEndian>> {
         ByteOrdered::be(self.inner)
