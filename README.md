@@ -17,14 +17,14 @@ Rather than building yet another new library, this crates aims to provide an alt
 An example follows. Please see [the documentation](https://docs.rs/byteordered) for more information.
 
 ```rust
-use byteordered::{ByteOrdered, BE, LE};
+use byteordered::{ByteOrdered, Endianness};
 
 let mut rd = ByteOrdered::le(get_data_source()?);
 // read 1st byte
 let b1 = rd.read_u8()?;
 // choose to read the following data in Little Endian if it's 0,
 // otherwise read in Big Endian
-let endianness = if b1 != 0 { LE } else { BE };
+let endianness = if b1 != 0 { Endianness::Little } else { Endianness::Big };
 let mut rd = rd.into_endianness(endianness);
 let value: u32 = rd.read_u32()?;
 ```

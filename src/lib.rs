@@ -2,7 +2,7 @@
 //! endianness that might only be known at run-time. It encapsulates the
 //! existing capabilities of the [`byteorder`] crate with an interface that
 //! assumes an implicitly acknowledged byte order.
-//! 
+//!
 //! The benefits of this API is two-fold. This crate supports use cases where
 //! the data's endianness is only known during program execution, which may
 //! happen in some formats and protocols. The same API can be used to reduce
@@ -17,12 +17,12 @@
 //! only known at run-time.
 //!
 //! # Examples
-//! 
+//!
 //! Use one of [`ByteOrdered`]'s constructors to create a wrapper with byte
 //! order awareness.
-//! 
+//!
 //! ```no_run
-//! use byteordered::{ByteOrdered, BE, LE, Endian};
+//! use byteordered::{ByteOrdered, Endianness};
 //! # use std::error::Error;
 //! # use std::io::Read;
 //!
@@ -35,7 +35,8 @@
 //! let w = rd.read_u16()?;
 //! // choose to read the following data in Little Endian if it's
 //! // smaller than 256, otherwise read in Big Endian
-//! let mut rd = rd.into_endianness(if w < 256 { LE } else { BE });
+//! let mut rd = rd.into_endianness(
+//!     if w < 256 { Endianness::Little } else { Endianness::Big });
 //! let value: u32 = rd.read_u32()?;
 //! # Ok(())
 //! # }
@@ -53,7 +54,7 @@
 //! extern crate byteordered;
 //!
 //! use byteorder::ReadBytesExt;
-//! use byteordered::{ByteOrdered, BE, LE, Endian};
+//! use byteordered::{ByteOrdered, Endianness};
 //! # use std::error::Error;
 //! # use std::io::Read;
 //!
@@ -62,7 +63,10 @@
 //! let b = 5;
 //! // choose to read the following data in Little Endian if it's 0,
 //! // otherwise read in Big Endian (what happens in this case)
-//! let mut wt = ByteOrdered::runtime(Vec::new(), if b == 0 { LE } else { BE });
+//! let mut wt = ByteOrdered::runtime(
+//!     Vec::new(),
+//!     if b == 0 { Endianness::Little } else { Endianness::Big }
+//! );
 //! // write in this byte order
 //! wt.write_u16(0xC000)?;
 //! wt.write_u32(0)?;
@@ -81,7 +85,7 @@
 //!
 //! `i128` enables reading and writing 128-bit integers, as in [`byteorder`].
 //! This library requires the standard library (`no_std` is currently not
-//! supported). 
+//! supported).
 //!
 //! [`byteorder`]: ../byteorder/index.html
 //! [`Endian`]: trait.Endian.html
@@ -96,18 +100,6 @@ mod wrap;
 
 pub use base::{Endian, Endianness, StaticEndianness};
 pub use wrap::ByteOrdered;
-
-/// Short-hand for Big Endian run-time endianness.
-/// Not to be mistaken with [`byteorder::BE`].
-///
-/// [`byteorder::BE`]: ../byteorder/BE.t.html
-pub const BE: Endianness = Endianness::Big;
-
-/// Short-hand for Little Endian run-time endianness.
-/// Not to be mistaken with [`byteorder::LE`].
-///
-/// [`byteorder::LE`]: ../byteorder/LE.t.html
-pub const LE: Endianness = Endianness::Little;
 
 #[cfg(test)]
 mod tests {}
