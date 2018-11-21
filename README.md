@@ -24,7 +24,7 @@ let mut rd = ByteOrdered::le(get_data_source()?);
 let b1 = rd.read_u8()?;
 // choose to read the following data in Little Endian if it's 0,
 // otherwise read in Big Endian
-let endianness = if b1 != 0 { Endianness::Little } else { Endianness::Big };
+let endianness = Endianness::le_iif(b1 != 0);
 let mut rd = rd.into_endianness(endianness);
 let value: u32 = rd.read_u32()?;
 ```
