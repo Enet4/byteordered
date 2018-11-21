@@ -3,10 +3,9 @@ name = "byteorder-runtime"
 version = "0.1.0"
 authors = ["Eduardo Pinho <enet4mikeenet@gmail.com>"]
 categories = ["encoding", "parsing"]
-description = "Reading and writing data in a byte order only known at run-time"
-documentation = "https://docs.rs/byteorder-runtime"
+description = "Abstraction for reading and writing data with implicit byte order awareness"
 keywords = ["byte", "endian", "big-endian", "little-endian", "binary"]
-license = "MIT or Apache-2.0"
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/Enet4/byteorder-runtime"
 
