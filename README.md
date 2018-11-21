@@ -12,8 +12,6 @@ In addition, some users feel that adding the type parameter on each read/write m
 
 Rather than building yet another new library, this crates aims to provide an alternative public API to `byteorder`, so that it becomes suitable for this particular case while preserving its familiarity and core capabilities.
 
-It is currently a work in progress: the API may have sudden changes at this phase.
-
 ## Using
 
 An example follows. Please see [the documentation](https://docs.rs/byteorder-runtime) for more information.
