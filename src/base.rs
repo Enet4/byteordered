@@ -396,7 +396,8 @@ impl Endianness {
     ///
     /// On this platform, the function returns `Endianness::Little`.
     #[cfg(target_endian = "little")]
-    pub fn native() -> Endianness {
+    #[inline]
+    pub fn native() -> Self {
         Endianness::Little
     }
 
@@ -404,12 +405,26 @@ impl Endianness {
     ///
     /// On this platform, the function returns `Endianness::Big`.
     #[cfg(target_endian = "big")]
-    pub fn native() -> Endianness {
+    #[inline]
+    pub fn native() -> Self {
         Endianness::Big
     }
 
+    /// Obtain _Little Endian_ if and only if the given value is `true`.
+    #[inline]
+    pub fn le_iif(e: bool) -> Self {
+        if e { Endianness::Little } else { Endianness::Big }
+    }
+
+    /// Obtain _Big Endian_ if and only if the given value is `true`.
+    #[inline]
+    pub fn be_iif(e: bool) -> Self {
+        if e { Endianness::Big } else { Endianness::Little }
+    }
+
     /// Obtain the opposite endianness: Little Endian returns Big Endian and vice versa.
-    pub fn to_opposite(self) -> Endianness {
+    #[inline]
+    pub fn to_opposite(self) -> Self {
         if self == Endianness::Little {
             Endianness::Big
         } else {
