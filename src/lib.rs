@@ -1,10 +1,13 @@
 //! This crate provides an alternative API for reading and writing data in an
 //! endianness that might only be known at run-time. It encapsulates the
-//! existing capabilities of the [`byteorder`] crate for the particular case of
-//! reading data in a byte order which can only be identified during program
-//! execution, which may happen in some formats and protocols. The same API
-//! can be used to reduce redundancy by indicating the intended byte order
-//! once for the entire routine, instead of one for each method call.
+//! existing capabilities of the [`byteorder`] crate with an interface that
+//! assumes an implicitly acknowledged byte order.
+//! 
+//! The benefits of this API is two-fold. This crate supports use cases where
+//! the data's endianness is only known during program execution, which may
+//! happen in some formats and protocols. The same API can be used to reduce
+//! redundancy by indicating the intended byte order once for the entire
+//! routine, instead of one for each method call.
 //!
 //! The main contribution in this crate is the [`ByteOrdered`] wrapper type,
 //! which infuses byte order information to a data source or destination (it
@@ -15,15 +18,17 @@
 //!
 //! # Examples
 //! 
+//! Use one of [`ByteOrdered`]'s constructors to create a wrapper with byte
+//! order awareness.
+//! 
 //! ```no_run
-//! extern crate byteordered;
-//!
 //! use byteordered::{ByteOrdered, BE, LE, Endian};
 //! # use std::error::Error;
 //! # use std::io::Read;
 //!
-//! # fn get_data_source() -> Result<Box<Read>, Box<Error>> { unimplemented!() }
-//!
+//! # fn get_data_source() -> Result<Box<Read>, Box<Error>> {
+//! #     unimplemented!()
+//! # }
 //! # fn run() -> Result<(), Box<Error>> {
 //! let mut rd = ByteOrdered::le(get_data_source()?); // little endian
 //! // read a u16
@@ -39,7 +44,8 @@
 //! # }
 //! ```
 //!
-//! Both crates work well side by side. You can use `byteorder` in one part of
+//! Both `byteordered` and [`byteorder`] work well side by side. You can use
+//! [`byteorder`] in one part of
 //! the routine, and wrap the reader or writer when deemed useful.
 //!
 //! ```
@@ -52,7 +58,6 @@
 //! # use std::io::Read;
 //!
 //! # fn get_data_source() -> Result<Box<Read>, Box<Error>> { unimplemented!() }
-//!
 //! # fn run() -> Result<(), Box<Error>> {
 //! let b = 5;
 //! // choose to read the following data in Little Endian if it's 0,
@@ -74,11 +79,12 @@
 //!
 //! # Features
 //!
-//! `i128` enables reading and writing 128-bit integers, as in the `byteorder`
-//! crate. This library currently requires the standard library (`no_std` is
-//! not supported). 
+//! `i128` enables reading and writing 128-bit integers, as in [`byteorder`].
+//! This library requires the standard library (`no_std` is currently not
+//! supported). 
 //!
 //! [`byteorder`]: ../byteorder/index.html
+//! [`Endian`]: trait.Endian.html
 //! [`Endianness`]: enum.Endianness.html
 //! [`ByteOrdered`]: struct.ByteOrdered.html
 #![warn(missing_docs)]

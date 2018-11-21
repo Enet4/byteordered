@@ -5,7 +5,14 @@ use std::default::Default;
 use std::io::{Read, Result as IoResult, Write};
 use std::marker::PhantomData;
 
-/// General trait for types representing a byte order.
+/// General trait for types that can serialize and deserialize bytes in some
+/// byte order. It roughly resembles [`byteorder::ByteOrder`], with the
+/// exception that it is implemented for material types. This makes it possible
+/// to embed byte order information to a reader or writer by composition
+/// (which is done by [`ByteOrdered`]).
+///
+/// [`byteorder::ByteOrder`]: ../byteorder/trait.ByteOrder.html
+/// [`ByteOrdered`]: ../struct.ByteOrder.html
 pub trait Endian {
     /// Reads a signed 16 bit integer from the given reader.
     ///
@@ -122,77 +129,77 @@ pub trait Endian {
         R: Read;
 
     /// Writes a signed 16 bit integer to the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     fn write_i16<W>(&self, writer: W, v: i16) -> IoResult<()>
     where
         W: Write;
 
     /// Writes an unsigned 16 bit integer to the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     fn write_u16<W>(&self, writer: W, v: u16) -> IoResult<()>
     where
         W: Write;
 
     /// Writes a signed 32 bit integer to the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     fn write_i32<W>(&self, writer: W, v: i32) -> IoResult<()>
     where
         W: Write;
 
     /// Writes an unsigned 32 bit integer to the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     fn write_u32<W>(&self, writer: W, v: u32) -> IoResult<()>
     where
         W: Write;
 
     /// Writes a signed 64 bit integer to the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     fn write_i64<W>(&self, writer: W, v: i64) -> IoResult<()>
     where
         W: Write;
 
     /// Writes an unsigned 64 bit integer to the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     fn write_u64<W>(&self, writer: W, v: u64) -> IoResult<()>
     where
         W: Write;
 
     /// Writes a signed 128 bit integer to the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     #[cfg(feature = "i128")]
     fn write_i128<W>(&self, writer: W, v: i128) -> IoResult<()>
@@ -200,11 +207,11 @@ pub trait Endian {
         W: Write;
 
     /// Writes an unsigned 128 bit integer to the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     #[cfg(feature = "i128")]
     fn write_u128<W>(&self, writer: W, v: u128) -> IoResult<()>
@@ -213,11 +220,11 @@ pub trait Endian {
 
     /// Writes a IEEE754 single-precision (4 bytes) floating point number to
     /// the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     fn write_f32<W>(&self, writer: W, v: f32) -> IoResult<()>
     where
@@ -225,11 +232,11 @@ pub trait Endian {
 
     /// Writes a IEEE754 double-precision (8 bytes) floating point number to
     /// the given writer.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// This method returns the same errors as [`Write::write_all`].
-    /// 
+    ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     fn write_f64<W>(&self, writer: W, v: f64) -> IoResult<()>
     where
@@ -237,7 +244,8 @@ pub trait Endian {
 }
 
 /// A data type representing a byte order known in compile time.
-/// Unlike `byteorder::LittleEndian`, this type has a default constructor.
+/// Unlike [`byteorder::LittleEndian`] and [`byteorder::BigEndian`],
+/// this type can be constructed.
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub struct StaticEndianness<E>(PhantomData<E>);
 
@@ -329,7 +337,6 @@ impl From<StaticEndianness<BigEndian>> for Endianness {
 
 macro_rules! fn_runtime_endianness_read {
     ($method:ident, $out:ty) => {
-        /// Read a primitive value with this endianness from the given source.
         fn $method<S>(&self, mut src: S) -> IoResult<$out>
         where
             S: Read,

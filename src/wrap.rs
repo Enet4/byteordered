@@ -27,7 +27,7 @@ where
 }
 
 impl<T> ByteOrdered<T, StaticEndianness<LittleEndian>> {
-    /// Obtains a new reader or writer that assumes little endian.
+    /// Obtains a new reader or writer that assumes data in _little endian_.
     pub fn le(inner: T) -> Self {
         ByteOrdered::new_default(inner)
     }
@@ -44,7 +44,7 @@ impl<T> ByteOrdered<T, StaticEndianness<LittleEndian>> {
 }
 
 impl<T> ByteOrdered<T, StaticEndianness<BigEndian>> {
-    /// Obtains a new reader or writer that assumes little endian.
+    /// Obtains a new reader or writer that assumes data in _big endian_.
     pub fn be(inner: T) -> Self {
         ByteOrdered::new_default(inner)
     }
@@ -61,24 +61,29 @@ impl<T> ByteOrdered<T, StaticEndianness<BigEndian>> {
 }
 
 impl<T> ByteOrdered<T, StaticEndianness<NativeEndian>> {
-    /// Obtains a new reader or writer that assumes native endianness
-    /// (which might sounds a bit pointless, but may enable easier byte
-    /// order conversions eventually).
+    /// Obtains a new reader or writer that assumes data in the system's
+    /// _native endianness_. While this method might sounds a bit pointless,
+    /// it enables easier byte order changes through method chaining).
     pub fn native(inner: T) -> Self {
         ByteOrdered::new_default(inner)
     }
 }
 
 impl<T> ByteOrdered<T, StaticEndianness<NetworkEndian>> {
-    /// Obtains a new reader or writer that assumes network order.
+    /// Obtains a new reader or writer that assumes _network order_.
     pub fn network(inner: T) -> Self {
         ByteOrdered::new_default(inner)
     }
 }
 
 impl<T> ByteOrdered<T, Endianness> {
-    /// Creates a new reader or writer that assumes the given byte order
-    /// that is only known at run-time.  
+    /// Creates a new reader or writer that assumes data in the given byte
+    /// order known at _run-time_. If you know the data's endianness in
+    /// advance, the other constructors are preferred (e.g. [`le`] or [`be`]),
+    /// so as to avoid the overhead of dynamic dispatching.
+    ///
+    /// [`le`]: struct.ByteOrdered.html#method.le
+    /// [`be`]: struct.ByteOrdered.html#method.be
     pub fn runtime(inner: T, endianness: Endianness) -> Self {
         ByteOrdered {
             inner: inner,
@@ -534,8 +539,8 @@ where
 #[cfg(test)]
 mod tests {
     // TODO test moar
-    use base::Endianness;
     use super::ByteOrdered;
+    use base::Endianness;
     static TEST_BYTES: &'static [u8] = &[0x12, 0x34, 0x56, 0x78, 0x21, 0x43, 0x65, 0x87];
 
     static TEST_U64DATA_LE: &'static [u64] = &[0x87654321_78563412];
