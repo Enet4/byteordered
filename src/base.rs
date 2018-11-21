@@ -308,11 +308,6 @@ where
     fn_static_endianness_write!(write_f64, E, f64);
 }
 
-/// A data type representing the Big Endian byte order.
-/// Unlike `byteorder::BigEndian`, this type has a default constructor.
-#[derive(Debug, Default, Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub struct BigEndianness;
-
 /// Enumerate for materializing the two kinds of machine byte order supported
 /// by Rust.
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, PartialOrd, Ord)]
