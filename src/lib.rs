@@ -35,7 +35,7 @@
 //! let w = rd.read_u16()?;
 //! // choose to read the following data in Little Endian if it's
 //! // smaller than 256, otherwise read in Big Endian
-//! let mut rd = rd.into_endianness(Endianness::le_iif(w < 256));
+//! let mut rd = rd.into_endianness(Endianness::le_iff(w < 256));
 //! let value: u32 = rd.read_u32()?;
 //! # Ok(())
 //! # }
