@@ -4,7 +4,7 @@ use byteorder::{
     BigEndian, LittleEndian, NativeEndian, NetworkEndian, ReadBytesExt, WriteBytesExt,
 };
 use std::fmt::Arguments;
-use std::io::{Read, Result as IoResult, Write};
+use std::io::{BufRead, Read, Result as IoResult, Seek, SeekFrom, Write};
 use {Endian, Endianness, StaticEndianness};
 
 /// Wrapper type for a reader or writer with an assumed byte order.
@@ -533,6 +533,36 @@ where
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
     pub fn write_f64(&mut self, x: f64) -> IoResult<()> {
         self.endianness.write_f64(self.inner.by_ref(), x)
+    }
+}
+
+impl<T, E> BufRead for ByteOrdered<T, E>
+where
+    T: BufRead,
+{
+    fn fill_buf(&mut self) -> IoResult<&[u8]> {
+        self.inner.fill_buf()
+    }
+    
+    fn consume(&mut self, amt: usize) {
+        self.inner.consume(amt)
+    }
+
+    fn read_until(&mut self, byte: u8, buf: &mut Vec<u8>) -> IoResult<usize> {
+        self.inner.read_until(byte, buf)
+    }
+
+    fn read_line(&mut self, buf: &mut String) -> IoResult<usize> {
+        self.inner.read_line(buf)
+    }
+}
+
+impl<T, E> Seek for ByteOrdered<T, E>
+where
+    T: Seek,
+{
+    fn seek(&mut self, pos: SeekFrom) -> IoResult<u64> {
+        self.inner.seek(pos)
     }
 }
 
