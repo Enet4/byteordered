@@ -78,25 +78,24 @@ impl<T> ByteOrdered<T, StaticEndianness<NetworkEndian>> {
 
 impl<T> ByteOrdered<T, Endianness> {
     /// Creates a new reader or writer that assumes data in the given byte
-    /// order known at _run-time_. If you know the data's endianness in
-    /// advance, the other constructors are preferred (e.g. [`le`] or [`be`]),
-    /// so as to avoid the overhead of dynamic dispatching.
+    /// order known at _run-time_.
+    /// 
+    /// Although it is equivalent to [`ByteOrdered::new`][`new`], this function
+    /// leaves a code signal that subsequent calls depend on conditions
+    /// resolved at run-time. If you know the data's endianness in advance, the
+    /// other constructors are preferred (e.g. [`new`], [`le`] or [`be`]), so
+    /// as to avoid the overhead of dynamic dispatching.
     ///
+    /// [`new`]: struct.ByteOrdered.html#method.new
     /// [`le`]: struct.ByteOrdered.html#method.le
     /// [`be`]: struct.ByteOrdered.html#method.be
     pub fn runtime(inner: T, endianness: Endianness) -> Self {
-        ByteOrdered {
-            inner: inner,
-            endianness: endianness,
-        }
+        ByteOrdered::new(inner, endianness)
     }
 
     /// Converts the assumed endianness to the opposite of the current order.
     pub fn into_opposite(self) -> Self {
-        ByteOrdered {
-            inner: self.inner,
-            endianness: self.endianness.to_opposite(),
-        }
+        ByteOrdered::new(self.inner, self.endianness.to_opposite())
     }
 
     /// Retrieves the runtime byte order assumed by this wrapper.
@@ -109,6 +108,21 @@ impl<T, E> ByteOrdered<T, E>
 where
     E: Endian,
 {
+    /// Creates a new reader or writer that assumes data in the given byte
+    /// order. This flexible constructor admits any kind of byte order (static
+    /// and dynamic). Note that the other constructors are easier to use (e.g.
+    /// [`le`], [`be`], or [`runtime`]).
+    ///
+    /// [`le`]: struct.ByteOrdered.html#method.le
+    /// [`be`]: struct.ByteOrdered.html#method.be
+    /// [`runtime`]: struct.ByteOrdered.html#method.runtime
+    pub fn new(inner: T, endianness: E) -> Self {
+        ByteOrdered {
+            inner: inner,
+            endianness: endianness,
+        }
+    }
+
     /// Recovers the inner reader or writer from this wrapper. Information
     /// about the assumed byte order is discarded.
     pub fn into_inner(self) -> T {
@@ -117,10 +131,7 @@ where
 
     /// Changes the assumed byte order of the reader or writer.
     pub fn into_endianness<E2: Endian>(self, endianness: E2) -> ByteOrdered<T, E2> {
-        ByteOrdered {
-            inner: self.inner,
-            endianness: endianness,
-        }
+        ByteOrdered::new(self.inner, endianness)
     }
 
     /// Changes the assumed byte order of the reader or writer to
