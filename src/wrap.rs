@@ -32,11 +32,6 @@ impl<T> ByteOrdered<T, StaticEndianness<LittleEndian>> {
         ByteOrdered::new_default(inner)
     }
 
-    /// Converts the assumed endianness to the opposite of the current order.
-    pub fn into_opposite(self) -> ByteOrdered<T, StaticEndianness<BigEndian>> {
-        self.into_be()
-    }
-
     /// Retrieves the runtime byte order assumed by this wrapper.
     pub fn endianness(&self) -> Endianness {
         Endianness::Little
@@ -47,11 +42,6 @@ impl<T> ByteOrdered<T, StaticEndianness<BigEndian>> {
     /// Obtains a new reader or writer that assumes data in _big endian_.
     pub fn be(inner: T) -> Self {
         ByteOrdered::new_default(inner)
-    }
-
-    /// Converts the assumed endianness to the opposite of the current order.
-    pub fn into_opposite(self) -> ByteOrdered<T, StaticEndianness<LittleEndian>> {
-        self.into_le()
     }
 
     /// Retrieves the runtime byte order assumed by this wrapper.
@@ -79,7 +69,7 @@ impl<T> ByteOrdered<T, StaticEndianness<NetworkEndian>> {
 impl<T> ByteOrdered<T, Endianness> {
     /// Creates a new reader or writer that assumes data in the given byte
     /// order known at _run-time_.
-    /// 
+    ///
     /// Although it is equivalent to [`ByteOrdered::new`][`new`], this function
     /// leaves a code signal that subsequent calls depend on conditions
     /// resolved at run-time. If you know the data's endianness in advance, the
@@ -91,11 +81,6 @@ impl<T> ByteOrdered<T, Endianness> {
     /// [`be`]: struct.ByteOrdered.html#method.be
     pub fn runtime(inner: T, endianness: Endianness) -> Self {
         ByteOrdered::new(inner, endianness)
-    }
-
-    /// Converts the assumed endianness to the opposite of the current order.
-    pub fn into_opposite(self) -> Self {
-        ByteOrdered::new(self.inner, self.endianness.to_opposite())
     }
 
     /// Retrieves the runtime byte order assumed by this wrapper.
@@ -144,6 +129,18 @@ where
     /// little endian.
     pub fn into_be(self) -> ByteOrdered<T, StaticEndianness<BigEndian>> {
         ByteOrdered::be(self.inner)
+    }
+
+    /// Converts the assumed endianness to the opposite of the current order.
+    pub fn into_opposite(self) -> ByteOrdered<T, E::Opposite>
+    where
+        E::Opposite: Endian,
+    {
+        let e = self.endianness.into_opposite();
+        ByteOrdered {
+            inner: self.inner,
+            endianness: e,
+        }
     }
 }
 
@@ -554,7 +551,7 @@ where
     fn fill_buf(&mut self) -> IoResult<&[u8]> {
         self.inner.fill_buf()
     }
-    
+
     fn consume(&mut self, amt: usize) {
         self.inner.consume(amt)
     }
