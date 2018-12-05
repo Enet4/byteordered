@@ -1,6 +1,6 @@
 # byteordered
 
-[![Latest Version](https://img.shields.io/crates/v/byteordered.svg)](https://crates.io/crates/byteordered) [![Build Status](https://travis-ci.org/Enet4/byteordered.svg?branch=master)](https://travis-ci.org/Enet4/byteordered) ![Minimum Rust Version 1.14](https://img.shields.io/badge/Minimum%20Rust%20Version-1.13-brightgreen.svg) [![dependency status](https://deps.rs/repo/github/Enet4/byteordered/status.svg)](https://deps.rs/repo/github/Enet4/byteordered)
+[![Latest Version](https://img.shields.io/crates/v/byteordered.svg)](https://crates.io/crates/byteordered) [![Build Status](https://travis-ci.org/Enet4/byteordered.svg?branch=master)](https://travis-ci.org/Enet4/byteordered) ![Minimum Rust Version 1.13](https://img.shields.io/badge/Minimum%20Rust%20Version-1.13-brightgreen.svg) [![dependency status](https://deps.rs/repo/github/Enet4/byteordered/status.svg)](https://deps.rs/repo/github/Enet4/byteordered)
 
 A library for reading and writing data in some byte order.
 
