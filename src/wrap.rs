@@ -8,6 +8,10 @@ use std::io::{BufRead, Read, Result as IoResult, Seek, SeekFrom, Write};
 use {Endian, Endianness, StaticEndianness};
 
 /// Wrapper type for a reader or writer with an assumed byte order.
+/// 
+/// More details can be found at the [crate level documentation][1].
+/// 
+/// [1]: index.html
 #[derive(Debug)]
 pub struct ByteOrdered<T, E> {
     inner: T,

@@ -12,7 +12,7 @@ use std::marker::PhantomData;
 /// (which is done by [`ByteOrdered`]).
 ///
 /// [`byteorder::ByteOrder`]: ../byteorder/trait.ByteOrder.html
-/// [`ByteOrdered`]: ../struct.ByteOrder.html
+/// [`ByteOrdered`]: struct.ByteOrdered.html
 pub trait Endian: private::Sealed {
     /// Reads a signed 16 bit integer from the given reader.
     ///
