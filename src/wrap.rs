@@ -96,10 +96,11 @@ where
     /// Creates a new reader or writer that assumes data in the given byte
     /// order. This flexible constructor admits any kind of byte order (static
     /// and dynamic). Note that the other constructors are easier to use (e.g.
-    /// [`le`], [`be`], or [`runtime`]).
+    /// [`le`], [`be`], [`native'], or [`runtime`]).
     ///
     /// [`le`]: struct.ByteOrdered.html#method.le
     /// [`be`]: struct.ByteOrdered.html#method.be
+    /// [`native`]: struct.ByteOrdered.html#method.native
     /// [`runtime`]: struct.ByteOrdered.html#method.runtime
     pub fn new(inner: T, endianness: E) -> Self {
         ByteOrdered {
@@ -134,13 +135,22 @@ where
     /// Converts the assumed endianness to the opposite of the current order.
     pub fn into_opposite(self) -> ByteOrdered<T, E::Opposite>
     where
-        E::Opposite: Endian,
+        E: Endian,
     {
         let e = self.endianness.into_opposite();
         ByteOrdered {
             inner: self.inner,
             endianness: e,
         }
+    }
+
+    /// Checks whether the assumed endianness is the system's native byte
+    /// order.
+    pub fn is_native(&self) -> bool
+    where
+        E: Endian,
+    {
+        self.endianness.is_native()
     }
 }
 

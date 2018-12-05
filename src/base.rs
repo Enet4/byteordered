@@ -6,18 +6,10 @@ use std::io::{Read, Result as IoResult, Write};
 use std::marker::PhantomData;
 
 /// Trait for any type which has an opposite type. This is used to convert
-/// immaterial type representing "little endian" into "big endian" and vice
+/// immaterial types representing "little endian" into "big endian" and vice
 /// versa.
 pub trait HasOpposite: private::Sealed {
     type Opposite;
-}
-
-/// Trait for any type with values that can be converted into their opposite.
-/// This is used to convert values representing "little endian" into
-/// "big endian" and vice versa.
-pub trait IntoOpposite: HasOpposite {
-    /// Converts the receiver into its opposite.
-    fn into_opposite(self) -> Self::Opposite;
 }
 
 impl HasOpposite for LittleEndian {
@@ -35,29 +27,24 @@ pub trait StaticNative: private::Sealed {
     fn is_native() -> bool;
 }
 
-/// Trait for identifying whether a value is representative of the system's
-/// native byte order.
-pub trait Native {
-    /// Checks whether this value represents the system's native endianness.
-    fn is_native(&self) -> bool;
+impl StaticNative for NativeEndian {
+    fn is_native() -> bool {
+        true
+    }
 }
 
 #[cfg(target_endian = "little")]
-impl StaticNative for LittleEndian {
-    fn is_native() -> bool { true }
-}
-#[cfg(target_endian = "little")]
 impl StaticNative for BigEndian {
-    fn is_native() -> bool { false }
+    fn is_native() -> bool {
+        false
+    }
 }
 
 #[cfg(target_endian = "big")]
 impl StaticNative for LittleEndian {
-    fn is_native() -> bool { false }
-}
-#[cfg(target_endian = "big")]
-impl StaticNative for BigEndian {
-    fn is_native() -> bool { true }
+    fn is_native() -> bool {
+        false
+    }
 }
 
 /// General trait for types that can serialize and deserialize bytes in some
@@ -68,7 +55,16 @@ impl StaticNative for BigEndian {
 ///
 /// [`byteorder::ByteOrder`]: ../byteorder/trait.ByteOrder.html
 /// [`ByteOrdered`]: ../struct.ByteOrder.html
-pub trait Endian: IntoOpposite + Native + private::Sealed {
+pub trait Endian: private::Sealed {
+    /// A type which can represent a byte order that is opposite to this one.
+    type Opposite;
+
+    /// Checks whether this value represents the system's native endianness.
+    fn is_native(&self) -> bool;
+
+    /// Converts the receiver into its opposite.
+    fn into_opposite(self) -> Self::Opposite;
+
     /// Reads a signed 16 bit integer from the given reader.
     ///
     /// # Errors
@@ -299,8 +295,13 @@ pub trait Endian: IntoOpposite + Native + private::Sealed {
 }
 
 /// A data type representing a byte order known in compile time.
-/// Unlike [`byteorder::LittleEndian`] and [`byteorder::BigEndian`],
-/// this type can be constructed.
+/// Unlike the types provided in `byteorder`, this type can be constructed.
+///
+/// The parameter type `E` can be one of either [`byteorder::BigEndian`][be]
+/// or [`byteorder::LittleEndian`][le].
+///
+/// [be]: ../byteorder/enum.BigEndian.html
+/// [le]: ../byteorder/enum.LittleEndian.html
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub struct StaticEndianness<E>(PhantomData<E>);
 
@@ -314,6 +315,30 @@ impl StaticEndianness<NativeEndian> {
     /// Constructor for native endianness.
     pub fn native() -> Self {
         StaticEndianness(PhantomData)
+    }
+}
+
+impl PartialEq<StaticEndianness<LittleEndian>> for StaticEndianness<BigEndian> {
+    fn eq(&self, _: &StaticEndianness<LittleEndian>) -> bool {
+        false
+    }
+}
+
+impl PartialEq<StaticEndianness<BigEndian>> for StaticEndianness<LittleEndian> {
+    fn eq(&self, _: &StaticEndianness<BigEndian>) -> bool {
+        false
+    }
+}
+
+impl PartialEq<Endianness> for StaticEndianness<BigEndian> {
+    fn eq(&self, e: &Endianness) -> bool {
+        *e == Endianness::Big
+    }
+}
+
+impl PartialEq<Endianness> for StaticEndianness<LittleEndian> {
+    fn eq(&self, e: &Endianness) -> bool {
+        *e == Endianness::Little
     }
 }
 
@@ -346,30 +371,22 @@ macro_rules! fn_static_endianness_write {
     };
 }
 
-impl<E> IntoOpposite for StaticEndianness<E>
-where
-    E: HasOpposite,
-{
-    fn into_opposite(self) -> Self::Opposite {
-        StaticEndianness(PhantomData)
-    }
-}
-
-impl<E> Native for StaticEndianness<E>
-where
-    E: StaticNative,
-{
-    fn is_native(&self) -> bool {
-        E::is_native()
-    }
-}
-
 impl<E> Endian for StaticEndianness<E>
 where
     E: HasOpposite,
     E: StaticNative,
     E: ByteOrder,
 {
+    type Opposite = StaticEndianness<E::Opposite>;
+
+    fn into_opposite(self) -> Self::Opposite {
+        StaticEndianness(PhantomData)
+    }
+
+    fn is_native(&self) -> bool {
+        E::is_native()
+    }
+
     fn_static_endianness_read!(read_i16, E, i16);
     fn_static_endianness_read!(read_u16, E, u16);
     fn_static_endianness_read!(read_i32, E, i32);
@@ -419,6 +436,18 @@ impl From<StaticEndianness<BigEndian>> for Endianness {
     }
 }
 
+impl PartialEq<StaticEndianness<BigEndian>> for Endianness {
+    fn eq(&self, _: &StaticEndianness<BigEndian>) -> bool {
+        *self == Endianness::Big
+    }
+}
+
+impl PartialEq<StaticEndianness<LittleEndian>> for Endianness {
+    fn eq(&self, _: &StaticEndianness<LittleEndian>) -> bool {
+        *self == Endianness::Little
+    }
+}
+
 macro_rules! fn_runtime_endianness_read {
     ($method:ident, $out:ty) => {
         fn $method<S>(&self, mut src: S) -> IoResult<$out>
@@ -451,21 +480,17 @@ impl HasOpposite for Endianness {
     type Opposite = Self;
 }
 
-impl IntoOpposite for Endianness
-{
+impl Endian for Endianness {
+    type Opposite = Self;
+
     fn into_opposite(self) -> Self::Opposite {
         self.to_opposite()
     }
-}
 
-impl Native for Endianness
-{
     fn is_native(&self) -> bool {
         *self == Endianness::native()
     }
-}
 
-impl Endian for Endianness {
     fn_runtime_endianness_read!(read_i16, i16);
     fn_runtime_endianness_read!(read_u16, u16);
     fn_runtime_endianness_read!(read_i32, i32);
@@ -513,27 +538,31 @@ impl Endianness {
     }
 
     /// Obtains _Little Endian_ if and only if the given value is `true`.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// # use byteordered::{Endian, Endianness};
     /// let data: &[u8] = &[4, 1];
     /// let e = Endianness::le_iff(2 + 2 == 4);
     /// assert_eq!(e.read_u16(data).unwrap(), 260);
-    /// 
+    ///
     /// let e = Endianness::le_iff(2 + 2 >= 5);
     /// assert_eq!(e.read_u16(data).unwrap(), 1025);
     /// ```
     #[inline]
     pub fn le_iff(e: bool) -> Self {
-        if e { Endianness::Little } else { Endianness::Big }
+        if e {
+            Endianness::Little
+        } else {
+            Endianness::Big
+        }
     }
 
     /// Obtains _Big Endian_ if and only if the given value is `true`.
-    /// 
+    ///
     /// Examples
-    /// 
+    ///
     /// ```
     /// # use byteordered::Endianness;
     /// assert_eq!(Endianness::be_iff(2 + 2 == 4), Endianness::Big);
@@ -541,7 +570,11 @@ impl Endianness {
     /// ```
     #[inline]
     pub fn be_iff(e: bool) -> Self {
-        if e { Endianness::Big } else { Endianness::Little }
+        if e {
+            Endianness::Big
+        } else {
+            Endianness::Little
+        }
     }
 
     /// Obtains the opposite endianness: Little Endian returns Big Endian and vice versa.
@@ -556,8 +589,8 @@ impl Endianness {
 }
 
 mod private {
-    use byteorder::{LittleEndian, BigEndian};
     use super::{Endianness, StaticEndianness};
+    use byteorder::{BigEndian, LittleEndian};
     pub trait Sealed {}
 
     impl Sealed for LittleEndian {}
