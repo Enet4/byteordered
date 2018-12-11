@@ -307,6 +307,13 @@ pub struct StaticEndianness<E>(PhantomData<E>);
 
 impl<E> Default for StaticEndianness<E> {
     fn default() -> Self {
+        StaticEndianness::new()
+    }
+}
+
+impl<E> StaticEndianness<E> {
+    /// Constructor for a static endianness.
+    pub fn new() -> Self {
         StaticEndianness(PhantomData)
     }
 }
@@ -314,7 +321,7 @@ impl<E> Default for StaticEndianness<E> {
 impl StaticEndianness<NativeEndian> {
     /// Constructor for native endianness.
     pub fn native() -> Self {
-        StaticEndianness(PhantomData)
+        StaticEndianness::new()
     }
 }
 
