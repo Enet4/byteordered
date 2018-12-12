@@ -53,7 +53,7 @@ impl StaticNative for LittleEndian {
 /// to embed byte order information to a reader or writer by composition
 /// (which is done by [`ByteOrdered`]).
 ///
-/// [`byteorder::ByteOrder`]: ../byteorder/trait.ByteOrder.html
+/// [`byteorder::ByteOrder`]: https://docs.rs/byteorder/*/byteorder/trait.ByteOrder.html
 /// [`ByteOrdered`]: struct.ByteOrdered.html
 pub trait Endian: private::Sealed {
     /// A type which can represent a byte order that is opposite to this one.
@@ -300,8 +300,8 @@ pub trait Endian: private::Sealed {
 /// The parameter type `E` can be one of either [`byteorder::BigEndian`][be]
 /// or [`byteorder::LittleEndian`][le].
 ///
-/// [be]: ../byteorder/enum.BigEndian.html
-/// [le]: ../byteorder/enum.LittleEndian.html
+/// [be]: https://docs.rs/byteorder/*/byteorder/enum.BigEndian.html
+/// [le]: https://docs.rs/byteorder/*/byteorder/enum.LittleEndian.html
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub struct StaticEndianness<E>(PhantomData<E>);
 

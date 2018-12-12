@@ -86,7 +86,7 @@
 //! This library requires the standard library (`no_std` is currently not
 //! supported).
 //!
-//! [`byteorder`]: ../byteorder/index.html
+//! [`byteorder`]: https://docs.rs/byteorder
 //! [`Endian`]: trait.Endian.html
 //! [`Endianness`]: enum.Endianness.html
 //! [`ByteOrdered`]: struct.ByteOrdered.html
