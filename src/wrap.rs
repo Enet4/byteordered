@@ -93,6 +93,15 @@ impl<T> ByteOrdered<T, Endianness> {
     }
 }
 
+impl<T, E> From<(T, E)> for ByteOrdered<T, E> {
+    fn from((inner, endianness): (T, E)) -> Self {
+        ByteOrdered {
+            inner: inner,
+            endianness: endianness,
+        }
+    }
+}
+
 impl<T, E> ByteOrdered<T, E>
 where
     E: Endian,
