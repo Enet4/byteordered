@@ -12,6 +12,8 @@ matrix:
       rust: stable
       services: docker
       sudo: required
+  allow_failures:
+    - rust: nightly
 
 before_script:
   - if [ ! -z "$CROSS_TARGET" ]; then
