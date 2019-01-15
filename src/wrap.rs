@@ -141,6 +141,11 @@ where
         ByteOrdered::new(self.inner_mut(), e)
     }
 
+    /// Disbands a `ByteOrder` into its parts.
+    pub fn into_parts(self) -> (T, E) {
+        (self.inner, self.endianness)
+    }
+
     /// Changes the assumed byte order of the reader or writer.
     pub fn into_endianness<E2: Endian>(self, endianness: E2) -> ByteOrdered<T, E2> {
         ByteOrdered::new(self.inner, endianness)
