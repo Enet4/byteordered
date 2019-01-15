@@ -80,7 +80,7 @@
 //! ```
 //! 
 //! As an additional construct, the [`with_order!`] macro is another API for
-//! reading and writing for sources, with the perk of providing explicit
+//! reading and writing data, with the perk of providing explicit
 //! monomorphization with respect to the given endianness.
 //! 
 //! ```no_run
