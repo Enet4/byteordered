@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate byteordered;
 
-use byteordered::Endianness;
+use byteordered::{ByteOrdered, Endianness};
 
 #[test]
 fn test_macro_one_read() {
@@ -52,4 +52,24 @@ fn test_macro_multi_pipe() {
     });
     
     assert_eq!(sink, vec![11, 2, 3, 104]);
+}
+
+#[test]
+fn test_macro_byteordered() {
+    let x: &[u8] = &[1, 2, 1, 2];
+    let mut reader = ByteOrdered::runtime(x, Endianness::le_iff(2 + 2 == 4));
+    let v = with_order!(reader.as_mut(), |data| {
+        let v = data.read_u16().unwrap();
+        assert_eq!(v, 513);
+        v
+    });
+
+    assert_eq!(v, 513);
+
+    let v = with_order!(reader, Endianness::Big, |data| {
+        let v = data.read_u16().unwrap();
+        assert_eq!(v, 258);
+        v
+    });
+    assert_eq!(v, 258);
 }

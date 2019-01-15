@@ -128,6 +128,19 @@ where
         self.inner
     }
 
+    /// Obtains an exclusive mutable reference to the inner reader or writer in
+    /// this wrapper. Information about the assumed byte order is ignored until
+    /// the reference is dropped.
+    pub fn inner_mut(&mut self) -> &mut T {
+        &mut self.inner
+    }
+
+    /// Converts from a `ByteOrdered<T, E>` to `ByteOrdered<&mut T, E>`.
+    pub fn as_mut(&mut self) -> ByteOrdered<&mut T, E> where E: Copy {
+        let e = self.endianness;
+        ByteOrdered::new(self.inner_mut(), e)
+    }
+
     /// Changes the assumed byte order of the reader or writer.
     pub fn into_endianness<E2: Endian>(self, endianness: E2) -> ByteOrdered<T, E2> {
         ByteOrdered::new(self.inner, endianness)

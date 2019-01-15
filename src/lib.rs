@@ -49,9 +49,8 @@
 //! the routine, and wrap the reader or writer when deemed useful.
 //!
 //! ```
-//! extern crate byteorder;
-//! extern crate byteordered;
-//!
+//! # extern crate byteorder;
+//! # extern crate byteordered;
 //! use byteorder::ReadBytesExt;
 //! use byteordered::{ByteOrdered, Endianness};
 //! # use std::error::Error;
@@ -79,6 +78,30 @@
 //! # run().unwrap();
 //! # }
 //! ```
+//! 
+//! As an additional construct, the [`with_order!`] macro is another API for
+//! reading and writing for sources, with the perk of providing explicit
+//! monomorphization with respect to the given endianness.
+//! 
+//! ```no_run
+//! # #[macro_use] extern crate byteordered;
+//! # use byteordered::Endianness;
+//! # use std::error::Error;
+//! # use std::io::Read;
+//! # fn get_data_source() -> Result<Box<Read>, Box<Error>> {
+//! #     unimplemented!()
+//! # }
+//! # fn run() -> Result<(), Box<Error>> {
+//! with_order!(get_data_source()?, Endianness::Little, |rd| {
+//!     let value: u32 = rd.read_u32()?;
+//!     println!("-> {}", value);
+//! });
+//! # Ok(())
+//! # }
+//! # fn main() {
+//! # run().unwrap();
+//! # }
+//! ```
 //!
 //! # Features
 //!
@@ -90,6 +113,7 @@
 //! [`Endian`]: trait.Endian.html
 //! [`Endianness`]: enum.Endianness.html
 //! [`ByteOrdered`]: struct.ByteOrdered.html
+//! [`with_order!`]: macro.with_order.html
 #![warn(missing_docs)]
 
 pub extern crate byteorder;
@@ -101,25 +125,28 @@ pub use base::{Endian, Endianness, StaticEndianness};
 pub use wrap::ByteOrdered;
 
 
-/// Creates a scope for reading or writing with run-time byte order awareness.
+/// Creates a monomorphized scope for reading or writing with run-time byte
+/// order awareness.
 /// 
 /// The condition of whether to read or write data in big endian or little
 /// endian is evaluated only once, at the beginning of the scope. The given
 /// expression `$e` is then monomorphized for both cases.
 /// 
+/// The last argument is not a closure. It is only depicted as one to convey
+/// the familiar aspect of being provided a local variable. As such, the data
+/// source and other captured values are moved by default.
+/// 
 /// # Examples
 /// 
-/// Pass something that implements `Read` or `Write`, and something which
-/// evaluates to a byte order descriptor (typically [`Endianness`]).
-/// What follows is a pseudo-closure declaration exposing the same value
-/// with the expected byte order awareness.
+/// Pass a [`ByteOrdered`] object, or a pair of data (source or destination) 
+/// and endianness (typically [`Endianness`]). What follows is a pseudo-closure
+/// declaration exposing the same value with the expected byte order awareness.
 ///  
 /// ```
-/// ##[macro_use] extern crate byteordered;
-/// use byteordered::Endianness;
+/// # #[macro_use] extern crate byteordered;
+/// # use byteordered::Endianness;
 /// # fn get_endianness() -> Endianness { Endianness::Little }
 /// # fn run() -> Result<(), ::std::io::Error> {
-///
 /// let e: Endianness = get_endianness();
 /// let mut sink = Vec::new(); 
 /// with_order!(&mut sink, e, |dest| {
@@ -141,9 +168,8 @@ pub use wrap::ByteOrdered;
 /// expression.
 /// 
 /// ```
-/// ##[macro_use] extern crate byteordered;
-/// use byteordered::Endianness;
-///
+/// # #[macro_use] extern crate byteordered;
+/// # use byteordered::Endianness;
 /// # fn get_endianness() -> Endianness { Endianness::Little }
 /// # fn run() -> Result<(), ::std::io::Error> {
 /// let e: Endianness = get_endianness();
@@ -161,12 +187,12 @@ pub use wrap::ByteOrdered;
 /// # }
 /// ```
 /// 
-/// One might think that this improves performance, since a runtime-bound
-/// `ByteOrdered` with a sequence of reads/writes would expand into one check
-/// for each method call:
+/// One might think that this always improves performance, since a
+/// runtime-bound `ByteOrdered` with a sequence of reads/writes would expand
+/// into one check for each method call:
 /// 
-/// ```
-/// use byteordered::{ByteOrdered, Endianness};
+/// ```no_run
+/// # use byteordered::{ByteOrdered, Endianness};
 /// # fn get_endianness() -> Endianness { Endianness::Little }
 /// # fn run() -> Result<(), ::std::io::Error> {
 /// let mut dst = ByteOrdered::runtime(Vec::new(), get_endianness());
@@ -181,17 +207,27 @@ pub use wrap::ByteOrdered;
 /// 
 /// However, because the compiler is known to optimize these checks away in
 /// the same context, making a scope for that purpose is not always necessary.
-/// On the other hand, this can be seen as yet another way to create and manage
-/// data sources/destinations with byte order awareness.
+/// On the other hand, this will ensure that deeper function calls are
+/// monomorphized to a static endianness without making unnecessary run-time
+/// checks, specifically when function calls are not inlined. It can also be
+/// seen as yet another way to create and manage data sources/destinations with
+/// byte order awareness.
 ///
+/// [`ByteOrdered`]: struct.ByteOrdered.html
 /// [`Endianness`]: enum.Endianness.html
 #[macro_export]
 macro_rules! with_order {
+    ($byteordered: expr, |$bo: ident| $e: expr) => {
+        {
+            let b = $byteordered;
+            let e = b.endianness();
+            with_order!(b.into_inner(), e, |$bo| $e)
+        }
+    };
     ( ($($src: expr ),*), $endianness: expr, |$($bo: ident ),*| $e: expr ) => {
         match $endianness {
             Endianness::Big => {
                 $(
-//                let mut src_or_dst = $src;
                 let mut $bo = ::byteordered::ByteOrdered::new(
                     $src,
                     ::byteordered::StaticEndianness::<byteorder::BigEndian>::default());
@@ -200,7 +236,6 @@ macro_rules! with_order {
             }
             Endianness::Little => {
                 $(
-//                let mut src_or_dst = $src;
                 let mut $bo = ::byteordered::ByteOrdered::new(
                     $src,
                     ::byteordered::StaticEndianness::<byteorder::LittleEndian>::default());
