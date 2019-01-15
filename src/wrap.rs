@@ -12,7 +12,7 @@ use {Endian, Endianness, StaticEndianness};
 /// More details can be found at the [crate level documentation][1].
 /// 
 /// [1]: index.html
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ByteOrdered<T, E> {
     inner: T,
     endianness: E,
