@@ -230,7 +230,7 @@ macro_rules! with_order {
                 $(
                 let mut $bo = ::byteordered::ByteOrdered::new(
                     $src,
-                    ::byteordered::StaticEndianness::<byteorder::BigEndian>::default());
+                    ::byteordered::StaticEndianness::<::byteordered::byteorder::BigEndian>::default());
                 )*
                 $e
             }
@@ -238,7 +238,7 @@ macro_rules! with_order {
                 $(
                 let mut $bo = ::byteordered::ByteOrdered::new(
                     $src,
-                    ::byteordered::StaticEndianness::<byteorder::LittleEndian>::default());
+                    ::byteordered::StaticEndianness::<::byteordered::byteorder::LittleEndian>::default());
                 )*
                 $e
             }
@@ -249,13 +249,13 @@ macro_rules! with_order {
             Endianness::Big => {
                 let mut $bo = ::byteordered::ByteOrdered::new(
                     $src,
-                    ::byteordered::StaticEndianness::<byteorder::BigEndian>::default());
+                    ::byteordered::StaticEndianness::<::byteordered::byteorder::BigEndian>::default());
                 $e
             }
             Endianness::Little => {
                 let mut $bo = ::byteordered::ByteOrdered::new(
                     $src,
-                    ::byteordered::StaticEndianness::<byteorder::LittleEndian>::default());
+                    ::byteordered::StaticEndianness::<::byteordered::byteorder::LittleEndian>::default());
                 $e
             }
         }
