@@ -10,7 +10,7 @@ While `byteorder` is well established in the Rust ecosystem, it relies on immate
 
 In addition, some users feel that adding the type parameter on each read/write method call is unnecessarily verbose and ugly.
 
-Rather than building yet another new library, this crates aims to provide an alternative public API to `byteorder`, so that it becomes suitable for this particular case while preserving its familiarity and core capabilities.
+Rather than building yet another new library, this crate aims to provide an alternative public API to `byteorder`, so that it becomes suitable for this particular case while preserving its familiarity and core capabilities.
 
 ## Using
 
