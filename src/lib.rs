@@ -7,13 +7,13 @@
 //! the data's endianness is only known during program execution, which may
 //! happen in some formats and protocols. The same API can be used to reduce
 //! redundancy by indicating the intended byte order once for the entire
-//! routine, instead of one for each method call.
+//! routine, instead of once for each method call.
 //!
 //! The main contribution in this crate is the [`ByteOrdered`] wrapper type,
 //! which infuses byte order information to a data source or destination (it
 //! works for both readers and writers). Moreover, the [`Endian`] trait
 //! contains multiple primitive data reading and writing methods, and the
-//! [`Endianness`] type provides a basic enumerate for run-time information
+//! [`Endianness`] type provides a basic enumerate for endianness information
 //! only known at run-time.
 //!
 //! # Examples
