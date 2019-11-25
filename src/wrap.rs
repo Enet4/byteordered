@@ -76,9 +76,9 @@ impl<T> ByteOrdered<T, Endianness> {
     ///
     /// Although it is equivalent to [`ByteOrdered::new`][`new`], this function
     /// leaves a code signal that subsequent calls depend on conditions
-    /// resolved at run-time. If you know the data's endianness in advance, the
-    /// other constructors are preferred (e.g. [`new`], [`le`] or [`be`]), so
-    /// as to avoid the overhead of dynamic dispatching.
+    /// resolved at run-time. If you know the data's endianness in compile
+    /// time, the other constructors are preferred (e.g. [`new`], [`le`] or
+    /// [`be`]), so as to avoid the overhead of dynamic dispatching.
     ///
     /// [`new`]: struct.ByteOrdered.html#method.new
     /// [`le`]: struct.ByteOrdered.html#method.le
@@ -108,8 +108,16 @@ where
 {
     /// Creates a new reader or writer that assumes data in the given byte
     /// order. This flexible constructor admits any kind of byte order (static
-    /// and dynamic). Note that the other constructors are easier to use (e.g.
-    /// [`le`], [`be`], [`native'], or [`runtime`]).
+    /// and dynamic).
+    /// 
+    /// **Note:** The other constructors ([`le`], [`be`], [`native`], and
+    /// [`runtime`]) are more recommended because they are easier to use and
+    /// leave a better signal of whether the endianness is known at compile
+    /// time or at run time. For example, if you pass a value literal of type
+    /// `Endianness` (such as `Endianness::Little`), the program will perform
+    /// dynamic dispatching in spite of the fixed byte order. The use of this
+    /// method is more appropriate when constructing functions which are
+    /// generic over the endianness type.
     ///
     /// [`le`]: struct.ByteOrdered.html#method.le
     /// [`be`]: struct.ByteOrdered.html#method.be
