@@ -171,6 +171,12 @@ where
         ByteOrdered::be(self.inner)
     }
 
+    /// Changes the assumed byte order of the reader or writer to
+    /// the system's native endianness.
+    pub fn into_native(self) -> ByteOrdered<T, StaticEndianness<NativeEndian>> {
+        ByteOrdered::native(self.inner)
+    }
+
     /// Converts the assumed endianness to the opposite of the current order.
     pub fn into_opposite(self) -> ByteOrdered<T, E::Opposite>
     where
