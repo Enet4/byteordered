@@ -1,6 +1,6 @@
 [package]
 name = "byteordered"
-version = "0.4.1"
+version = "0.4.2-alpha.0"
 authors = ["Eduardo Pinho <enet4mikeenet@gmail.com>"]
 categories = ["encoding", "parsing"]
 description = "Abstraction for reading and writing data with implicit byte order awareness"
