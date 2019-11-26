@@ -35,22 +35,12 @@ impl<T> ByteOrdered<T, StaticEndianness<LittleEndian>> {
     pub fn le(inner: T) -> Self {
         ByteOrdered::new_default(inner)
     }
-
-    /// Retrieves the runtime byte order assumed by this wrapper.
-    pub fn endianness(&self) -> Endianness {
-        Endianness::Little
-    }
 }
 
 impl<T> ByteOrdered<T, StaticEndianness<BigEndian>> {
     /// Obtains a new reader or writer that assumes data in _big endian_.
     pub fn be(inner: T) -> Self {
         ByteOrdered::new_default(inner)
-    }
-
-    /// Retrieves the runtime byte order assumed by this wrapper.
-    pub fn endianness(&self) -> Endianness {
-        Endianness::Big
     }
 }
 
@@ -85,11 +75,6 @@ impl<T> ByteOrdered<T, Endianness> {
     /// [`be`]: struct.ByteOrdered.html#method.be
     pub fn runtime(inner: T, endianness: Endianness) -> Self {
         ByteOrdered::new(inner, endianness)
-    }
-
-    /// Retrieves the runtime byte order assumed by this wrapper.
-    pub fn endianness(&self) -> Endianness {
-        self.endianness
     }
 }
 
@@ -189,6 +174,14 @@ where
         }
     }
 
+    /// Retrieves the byte order assumed by this wrapper.
+    pub fn endianness(&self) -> E
+    where
+        E: Copy,
+    {
+        self.endianness
+    }
+    
     /// Checks whether the assumed endianness is the system's native byte
     /// order.
     pub fn is_native(&self) -> bool
