@@ -1,6 +1,6 @@
 [package]
 name = "byteordered"
-version = "0.4.1-alpha.0"
+version = "0.4.1"
 authors = ["Eduardo Pinho <enet4mikeenet@gmail.com>"]
 categories = ["encoding", "parsing"]
 description = "Abstraction for reading and writing data with implicit byte order awareness"
@@ -8,6 +8,9 @@ keywords = ["byte", "endian", "big-endian", "little-endian", "binary"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/Enet4/byteordered"
+
+[package.metadata.docs.rs]
+features = ["i128"]
 
 [dependencies]
 byteorder = "1.0.0"
@@ -18,6 +21,3 @@ i128 = ["byteorder/i128"]
 [badges.travis-ci]
 branch = "master"
 repository = "Enet4/byteordered"
-
-[package.metadata.docs.rs]
-features = ["i128"]
