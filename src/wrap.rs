@@ -8,9 +8,9 @@ use std::io::{BufRead, Read, Result as IoResult, Seek, SeekFrom, Write};
 use {Endian, Endianness, StaticEndianness};
 
 /// Wrapper type for a reader or writer with an assumed byte order.
-/// 
+///
 /// More details can be found at the [crate level documentation][1].
-/// 
+///
 /// [1]: index.html
 #[derive(Debug, Clone)]
 pub struct ByteOrdered<T, E> {
@@ -94,7 +94,7 @@ where
     /// Creates a new reader or writer that assumes data in the given byte
     /// order. This flexible constructor admits any kind of byte order (static
     /// and dynamic).
-    /// 
+    ///
     /// **Note:** The other constructors ([`le`], [`be`], [`native`], and
     /// [`runtime`]) are more recommended because they are easier to use and
     /// leave a better signal of whether the endianness is known at compile
@@ -130,7 +130,10 @@ where
 
     /// Converts from `ByteOrdered<T, E>` to `ByteOrdered<&mut T, E>`,
     /// copying the endianness information.
-    pub fn as_mut(&mut self) -> ByteOrdered<&mut T, E> where E: Copy {
+    pub fn as_mut(&mut self) -> ByteOrdered<&mut T, E>
+    where
+        E: Copy,
+    {
         let e = self.endianness;
         ByteOrdered::new(self.inner_mut(), e)
     }
@@ -182,7 +185,7 @@ where
     {
         self.endianness
     }
-    
+
     /// Checks whether the assumed endianness is the system's native byte
     /// order.
     pub fn is_native(&self) -> bool

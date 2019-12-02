@@ -78,11 +78,11 @@
 //! # run().unwrap();
 //! # }
 //! ```
-//! 
+//!
 //! As an additional construct, the [`with_order!`] macro is another API for
 //! reading and writing data, with the perk of providing explicit
 //! monomorphization with respect to the given endianness.
-//! 
+//!
 //! ```no_run
 //! # #[macro_use] extern crate byteordered;
 //! # use byteordered::Endianness;
@@ -124,21 +124,20 @@ mod wrap;
 pub use base::{Endian, Endianness, StaticEndianness};
 pub use wrap::ByteOrdered;
 
-
 /// Creates a monomorphized scope for reading or writing with run-time byte
 /// order awareness.
-/// 
+///
 /// The condition of whether to read or write data in big endian or little
 /// endian is evaluated only once, at the beginning of the scope. The given
 /// expression `$e` is then monomorphized for both cases.
-/// 
+///
 /// The last argument is not a closure. It is only depicted as one to convey
 /// the familiar aspect of being provided a local variable. As such, the data
 /// source and other captured values are moved by default.
-/// 
+///
 /// # Examples
-/// 
-/// Pass a [`ByteOrdered`] object, or a pair of data (source or destination) 
+///
+/// Pass a [`ByteOrdered`] object, or a pair of data (source or destination)
 /// and endianness (typically [`Endianness`]). What follows is a pseudo-closure
 /// declaration exposing the same value with the expected byte order awareness.
 ///  
@@ -148,7 +147,7 @@ pub use wrap::ByteOrdered;
 /// # fn get_endianness() -> Endianness { Endianness::Little }
 /// # fn run() -> Result<(), ::std::io::Error> {
 /// let e: Endianness = get_endianness();
-/// let mut sink = Vec::new(); 
+/// let mut sink = Vec::new();
 /// with_order!(&mut sink, e, |dest| {
 ///     // dset is a `ByteOrdered<_, StaticEndianness<_>>`
 ///     dest.write_u32(8)?;
@@ -162,11 +161,11 @@ pub use wrap::ByteOrdered;
 /// #   run().unwrap();
 /// # }
 /// ```
-/// 
+///
 /// Moreover, you can pass multiple readers or writers to be augmented with
 /// the same implicit byte order. Note that the macro requires a literal tuple
 /// expression.
-/// 
+///
 /// ```
 /// # #[macro_use] extern crate byteordered;
 /// # use byteordered::Endianness;
@@ -186,11 +185,11 @@ pub use wrap::ByteOrdered;
 /// #   run().unwrap();
 /// # }
 /// ```
-/// 
+///
 /// One might think that this always improves performance, since a
 /// runtime-bound `ByteOrdered` with a sequence of reads/writes would expand
 /// into one check for each method call:
-/// 
+///
 /// ```no_run
 /// # use byteordered::{ByteOrdered, Endianness};
 /// # fn get_endianness() -> Endianness { Endianness::Little }
@@ -204,7 +203,7 @@ pub use wrap::ByteOrdered;
 /// # }
 /// # run().unwrap();
 /// ```
-/// 
+///
 /// However, because the compiler is known to optimize these checks away in
 /// the same context, making a scope for that purpose is not always necessary.
 /// On the other hand, this will ensure that deeper function calls are
