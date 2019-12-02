@@ -128,7 +128,8 @@ where
         &mut self.inner
     }
 
-    /// Converts from a `ByteOrdered<T, E>` to `ByteOrdered<&mut T, E>`.
+    /// Converts from `ByteOrdered<T, E>` to `ByteOrdered<&mut T, E>`,
+    /// copying the endianness information.
     pub fn as_mut(&mut self) -> ByteOrdered<&mut T, E> where E: Copy {
         let e = self.endianness;
         ByteOrdered::new(self.inner_mut(), e)
