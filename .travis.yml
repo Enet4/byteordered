@@ -6,8 +6,6 @@ matrix:
     - rust: stable
     - rust: beta
     - rust: nightly
-    - env: CARGO_FEATURES=--features i128
-      rust: stable
     - env: CROSS_TARGET=mips64-unknown-linux-gnuabi64
       rust: stable
       services: docker

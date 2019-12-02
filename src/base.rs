@@ -138,7 +138,6 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    #[cfg(feature = "i128")]
     fn read_i128<R>(&self, reader: R) -> IoResult<i128>
     where
         R: Read;
@@ -150,7 +149,6 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    #[cfg(feature = "i128")]
     fn read_u128<R>(&self, reader: R) -> IoResult<u128>
     where
         R: Read;
@@ -252,7 +250,6 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    #[cfg(feature = "i128")]
     fn write_i128<W>(&self, writer: W, v: i128) -> IoResult<()>
     where
         W: Write;
@@ -264,7 +261,6 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    #[cfg(feature = "i128")]
     fn write_u128<W>(&self, writer: W, v: u128) -> IoResult<()>
     where
         W: Write;
@@ -400,9 +396,7 @@ where
     fn_static_endianness_read!(read_u32, E, u32);
     fn_static_endianness_read!(read_i64, E, i64);
     fn_static_endianness_read!(read_u64, E, u64);
-    #[cfg(feature = "i128")]
     fn_static_endianness_read!(read_i128, E, i128);
-    #[cfg(feature = "i128")]
     fn_static_endianness_read!(read_u128, E, u128);
     fn_static_endianness_read!(read_f32, E, f32);
     fn_static_endianness_read!(read_f64, E, f64);
@@ -413,9 +407,7 @@ where
     fn_static_endianness_write!(write_u32, E, u32);
     fn_static_endianness_write!(write_i64, E, i64);
     fn_static_endianness_write!(write_u64, E, u64);
-    #[cfg(feature = "i128")]
     fn_static_endianness_write!(write_i128, E, i128);
-    #[cfg(feature = "i128")]
     fn_static_endianness_write!(write_u128, E, u128);
     fn_static_endianness_write!(write_f32, E, f32);
     fn_static_endianness_write!(write_f64, E, f64);
@@ -506,9 +498,7 @@ impl Endian for Endianness {
     fn_runtime_endianness_read!(read_u64, u64);
     fn_runtime_endianness_read!(read_f32, f32);
     fn_runtime_endianness_read!(read_f64, f64);
-    #[cfg(feature = "i128")]
     fn_runtime_endianness_read!(read_i128, i128);
-    #[cfg(feature = "i128")]
     fn_runtime_endianness_read!(read_u128, u128);
 
     fn_runtime_endianness_write!(write_i16, i16);
@@ -519,9 +509,7 @@ impl Endian for Endianness {
     fn_runtime_endianness_write!(write_u64, u64);
     fn_runtime_endianness_write!(write_f32, f32);
     fn_runtime_endianness_write!(write_f64, f64);
-    #[cfg(feature = "i128")]
     fn_runtime_endianness_write!(write_i128, i128);
-    #[cfg(feature = "i128")]
     fn_runtime_endianness_write!(write_u128, u128);
 }
 

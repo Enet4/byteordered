@@ -393,7 +393,6 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    #[cfg(feature = "i128")]
     pub fn read_i128(&mut self) -> IoResult<i128> {
         self.endianness.read_i128(self.inner.by_ref())
     }
@@ -405,7 +404,6 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    #[cfg(feature = "i128")]
     pub fn read_u128(&mut self) -> IoResult<u128> {
         self.endianness.read_u128(self.inner.by_ref())
     }
@@ -554,7 +552,6 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    #[cfg(feature = "i128")]
     pub fn write_i128(&mut self, x: i128) -> IoResult<()> {
         self.endianness.write_i128(self.inner.by_ref(), x)
     }
@@ -566,7 +563,6 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    #[cfg(feature = "i128")]
     pub fn write_u128(&mut self, x: u128) -> IoResult<()> {
         self.endianness.write_u128(self.inner.by_ref(), x)
     }

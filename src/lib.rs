@@ -105,7 +105,6 @@
 //!
 //! # Features
 //!
-//! `i128` enables reading and writing 128-bit integers, as in [`byteorder`].
 //! This library requires the standard library (`no_std` is currently not
 //! supported).
 //!
