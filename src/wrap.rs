@@ -143,6 +143,16 @@ where
         (self.inner, self.endianness)
     }
 
+    /// Maps a `ByteOrdered<T, E>` into a `ByteOrdered<O, E>` by applying the
+    /// given function to the inner reader or writer.
+    pub fn map<F, U>(self, f: F) -> ByteOrdered<U, E>
+    where
+        F: FnOnce(T) -> U,
+    {
+        let (src, e) = self.into_parts();
+        ByteOrdered::new(f(src), e)
+    }
+
     /// Changes the assumed byte order of the reader or writer.
     pub fn into_endianness<E2: Endian>(self, endianness: E2) -> ByteOrdered<T, E2> {
         ByteOrdered::new(self.inner, endianness)
