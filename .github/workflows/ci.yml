@@ -1,0 +1,72 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+    - master
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: test
+    env:
+      # For some builds, we use cross to test on 32-bit and big-endian
+      # systems.
+      CARGO: cargo
+      # When CARGO is set to CROSS, TARGET is set to `--target matrix.target`.
+      TARGET: ''
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build:
+        - pinned
+        - stable
+        - stable-mips
+        - beta
+        - nightly
+        include:
+        - build: pinned
+          rust: 1.41.1
+        - build: stable
+          rust: stable
+        - build: stable-mips
+          rust: stable
+          target: mips64-unknown-linux-gnuabi64
+        - build: beta
+          rust: beta
+        - build: nightly
+          rust: nightly
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        profile: minimal
+        override: true
+
+    - name: Use Cross
+      if: matrix.target != ''
+      run: |
+        cargo install --git https://github.com/rust-embedded/cross
+        echo "CARGO=cross" >> $GITHUB_ENV
+        echo "TARGET=--target ${{ matrix.target }}" >> $GITHUB_ENV
+    - name: Show command used for Cargo
+      run: |
+        echo "cargo command is: ${{ env.CARGO }}"
+        echo "target flag is: ${{ env.TARGET }}"
+    - name: Show CPU info for debugging
+      run: lscpu
+
+    - name: Build
+      run: ${{ env.CARGO }} build --verbose $TARGET
+
+    - name: Tests
+      run: ${{ env.CARGO }} test --verbose $TARGET
