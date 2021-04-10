@@ -18,7 +18,7 @@ jobs:
       CARGO: cargo
       # When CARGO is set to CROSS, TARGET is set to `--target matrix.target`.
       TARGET: ''
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         build:
