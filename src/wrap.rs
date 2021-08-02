@@ -24,7 +24,7 @@ where
 {
     fn new_default(inner: T) -> Self {
         ByteOrdered {
-            inner: inner,
+            inner,
             endianness: Default::default(),
         }
     }
@@ -81,8 +81,8 @@ impl<T> ByteOrdered<T, Endianness> {
 impl<T, E> From<(T, E)> for ByteOrdered<T, E> {
     fn from((inner, endianness): (T, E)) -> Self {
         ByteOrdered {
-            inner: inner,
-            endianness: endianness,
+            inner,
+            endianness,
         }
     }
 }
@@ -110,8 +110,8 @@ where
     /// [`runtime`]: struct.ByteOrdered.html#method.runtime
     pub fn new(inner: T, endianness: E) -> Self {
         ByteOrdered {
-            inner: inner,
-            endianness: endianness,
+            inner,
+            endianness,
         }
     }
 
