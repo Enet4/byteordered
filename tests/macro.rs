@@ -25,11 +25,11 @@ fn test_macro_one_read() {
 #[test]
 fn test_macro_one_read_2() {
     let x: &[u8] = &[16, 1];
-    let v = with_order!(x, Endianness::Little, |data| { data.read_u16().unwrap() });
+    let v = with_order!(x, Endianness::Little, |data| data.read_u16().unwrap());
     assert_eq!(v, 272);
 
     let x: &[u8] = &[1, 16];
-    let v = with_order!(x, Endianness::Big, |data| { data.read_u16().unwrap() });
+    let v = with_order!(x, Endianness::Big, |data| data.read_u16().unwrap());
     assert_eq!(v, 272);
 }
 
