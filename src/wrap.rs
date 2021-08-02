@@ -278,12 +278,15 @@ where
     /// Read unsigned 8 bit integers from a `Read`:
     ///
     /// ```rust
-    /// use std::io::Cursor;
     /// use byteordered::ByteOrdered;
     ///
-    /// let mut rdr = ByteOrdered::native(Cursor::new(vec![2, 5]));
-    /// assert_eq!(2, rdr.read_i8().unwrap());
-    /// assert_eq!(5, rdr.read_i8().unwrap());
+    /// # fn run() -> std::io::Result<()> {
+    /// let mut rdr = ByteOrdered::native(&[2, 5][..]);
+    /// assert_eq!(2, rdr.read_i8()?);
+    /// assert_eq!(5, rdr.read_i8()?);
+    /// # Ok(())
+    /// # }
+    /// # run().unwrap();
     /// ```
     pub fn read_i8(&mut self) -> IoResult<i8> {
         ReadBytesExt::read_i8(self)
@@ -306,12 +309,15 @@ where
     /// Read unsigned 8 bit integers from a `Read`:
     ///
     /// ```rust
-    /// use std::io::Cursor;
     /// use byteordered::ByteOrdered;
     ///
-    /// let mut rdr = ByteOrdered::native(Cursor::new(vec![2, 5]));
-    /// assert_eq!(2, rdr.read_u8().unwrap());
-    /// assert_eq!(5, rdr.read_u8().unwrap());
+    /// # fn run() -> std::io::Result<()> {
+    /// let mut rdr = ByteOrdered::native(&[2, 5][..]);
+    /// assert_eq!(2, rdr.read_u8()?);
+    /// assert_eq!(5, rdr.read_u8()?);
+    /// # Ok(())
+    /// # }
+    /// # run().unwrap();
     /// ```
     pub fn read_u8(&mut self) -> IoResult<u8> {
         ReadBytesExt::read_u8(self)
@@ -330,12 +336,15 @@ where
     /// Read signed 16 bit big-endian integers from a `Read`:
     ///
     /// ```rust
-    /// use std::io::Cursor;
     /// use byteordered::ByteOrdered;
     ///
-    /// let mut rdr = ByteOrdered::be(Cursor::new(vec![0x00, 0xc1, 0xff, 0x7c]));
-    /// assert_eq!(193, rdr.read_i16().unwrap());
-    /// assert_eq!(-132, rdr.read_i16().unwrap());
+    /// # fn run() -> std::io::Result<()> {
+    /// let mut rdr = ByteOrdered::be(&[0x00, 0xc1, 0xff, 0x7c][..]);
+    /// assert_eq!(193, rdr.read_i16()?);
+    /// assert_eq!(-132, rdr.read_i16()?);
+    /// # Ok(())
+    /// # }
+    /// # run().unwrap();
     /// ```
     pub fn read_i16(&mut self) -> IoResult<i16> {
         self.endianness.read_i16(self.inner.by_ref())
