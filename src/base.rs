@@ -564,6 +564,9 @@ where
     type Opposite = StaticEndianness<E::Opposite>;
 }
 
+/// Private macro for endiannesses known at compile time,
+/// which implements a `read_*` method
+/// by delegating a call to the same method on `ReadBytesExt`.
 macro_rules! fn_static_endianness_read {
     ($method:ident, $e:ty, $out:ty) => {
         fn $method<S>(&self, mut src: S) -> IoResult<$out>
@@ -575,6 +578,23 @@ macro_rules! fn_static_endianness_read {
     };
 }
 
+/// Private macro for endiannesses known at compile time,
+/// which implements a `read_*_into` method
+/// by delegating a call to the same method on `ReadBytesExt`.
+macro_rules! fn_static_endianness_read_into {
+    ($method:ident, $e:ty, $out:ty) => {
+        fn $method<S>(&self, mut src: S, dst: &mut [$out]) -> IoResult<()>
+        where
+            S: Read,
+        {
+            src.$method::< $e >(dst)
+        }
+    };
+}
+
+/// Private macro for endiannesses known at compile time,
+/// which implements a `write_*` method
+/// by delegating a call to the same method on `WriteBytesExt`.
 macro_rules! fn_static_endianness_write {
     ($method:ident, $e:ty, $out:ty) => {
         fn $method<W>(&self, mut src: W, x: $out) -> IoResult<()>
@@ -612,6 +632,17 @@ where
     fn_static_endianness_read!(read_u128, E, u128);
     fn_static_endianness_read!(read_f32, E, f32);
     fn_static_endianness_read!(read_f64, E, f64);
+
+    fn_static_endianness_read_into!(read_i16_into, E, i16);
+    fn_static_endianness_read_into!(read_u16_into, E, u16);
+    fn_static_endianness_read_into!(read_i32_into, E, i32);
+    fn_static_endianness_read_into!(read_u32_into, E, u32);
+    fn_static_endianness_read_into!(read_i64_into, E, i64);
+    fn_static_endianness_read_into!(read_u64_into, E, u64);
+    fn_static_endianness_read_into!(read_i128_into, E, i128);
+    fn_static_endianness_read_into!(read_u128_into, E, u128);
+    fn_static_endianness_read_into!(read_f32_into, E, f32);
+    fn_static_endianness_read_into!(read_f64_into, E, f64);
 
     fn_static_endianness_write!(write_i16, E, i16);
     fn_static_endianness_write!(write_u16, E, u16);
@@ -659,6 +690,9 @@ impl PartialEq<StaticEndianness<LittleEndian>> for Endianness {
     }
 }
 
+/// Private macro for endiannesses known at run time,
+/// which implements a `read_*` method
+/// by delegating a call to the same method on `ReadBytesExt`.
 macro_rules! fn_runtime_endianness_read {
     ($method:ident, $out:ty) => {
         fn $method<S>(&self, mut src: S) -> IoResult<$out>
@@ -673,6 +707,26 @@ macro_rules! fn_runtime_endianness_read {
     };
 }
 
+/// Private macro for endiannesses known at run time,
+/// which implements a `read_*_into` method
+/// by delegating a call to the same method on `ReadBytesExt`.
+macro_rules! fn_runtime_endianness_read_into {
+    ($method:ident, $out:ty) => {
+        fn $method<S>(&self, mut src: S, dst: &mut [$out]) -> IoResult<()>
+        where
+            S: Read,
+        {
+            match *self {
+                Endianness::Little => src.$method::<LittleEndian>(dst),
+                Endianness::Big => src.$method::<BigEndian>(dst),
+            }
+        }
+    };
+}
+
+/// Private macro for endiannesses known at run time,
+/// which implements a `write_*` method
+/// by delegating a call to the same method on `WriteBytesExt`.
 macro_rules! fn_runtime_endianness_write {
     ($method:ident, $i:ty) => {
         fn $method<S>(&self, mut src: S, v: $i) -> IoResult<()>
@@ -712,6 +766,17 @@ impl Endian for Endianness {
     fn_runtime_endianness_read!(read_f64, f64);
     fn_runtime_endianness_read!(read_i128, i128);
     fn_runtime_endianness_read!(read_u128, u128);
+
+    fn_runtime_endianness_read_into!(read_i16_into, i16);
+    fn_runtime_endianness_read_into!(read_u16_into, u16);
+    fn_runtime_endianness_read_into!(read_i32_into, i32);
+    fn_runtime_endianness_read_into!(read_u32_into, u32);
+    fn_runtime_endianness_read_into!(read_i64_into, i64);
+    fn_runtime_endianness_read_into!(read_u64_into, u64);
+    fn_runtime_endianness_read_into!(read_f32_into, f32);
+    fn_runtime_endianness_read_into!(read_f64_into, f64);
+    fn_runtime_endianness_read_into!(read_i128_into, i128);
+    fn_runtime_endianness_read_into!(read_u128_into, u128);
 
     fn_runtime_endianness_write!(write_i16, i16);
     fn_runtime_endianness_write!(write_u16, u16);
