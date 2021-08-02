@@ -120,7 +120,7 @@ pub trait Endian: private::Sealed {
     where
         R: Read;
 
-    /// Reads an unsigned 16 bit integer from the given reader.
+    /// Reads an unsigned 64 bit integer from the given reader.
     ///
     /// # Errors
     ///
@@ -142,7 +142,7 @@ pub trait Endian: private::Sealed {
     where
         R: Read;
 
-    /// Reads an unsigned 16 bit integer from the given reader.
+    /// Reads an unsigned 128 bit integer from the given reader.
     ///
     /// # Errors
     ///
