@@ -350,6 +350,38 @@ where
         self.endianness.read_i16(self.inner.by_ref())
     }
 
+    /// Reads a sequence of signed 16 bit integers from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    ///
+    /// # Examples
+    ///
+    /// Read two signed 16 bit big-endian integers from a `Read`:
+    ///
+    /// ```rust
+    /// use std::io::Cursor;
+    /// use byteordered::ByteOrdered;
+    ///
+    /// # fn run() -> std::io::Result<()> {
+    /// let mut out = [0; 2];
+    /// let mut rdr = ByteOrdered::be(Cursor::new(vec![0x00, 0xc1, 0xff, 0x7c]));
+    /// rdr.read_i16_into(&mut out)?;
+    /// assert_eq!(out, [193, -132]);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn read_i16_into(&mut self, dst: &mut [i16]) -> IoResult<()> {
+        self.endianness.read_i16_into(self.inner.by_ref(), dst)
+    }
+
     /// Reads an unsigned 16 bit integer from the underlying reader.
     ///
     /// # Errors
@@ -359,6 +391,21 @@ where
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
     pub fn read_u16(&mut self) -> IoResult<u16> {
         self.endianness.read_u16(self.inner.by_ref())
+    }
+
+    /// Reads a sequence of unsigned 16 bit integers from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    pub fn read_u16_into(&mut self, dst: &mut [u16]) -> IoResult<()> {
+        self.endianness.read_u16_into(self.inner.by_ref(), dst)
     }
 
     /// Reads a signed 32 bit integer from the underlying reader.
@@ -372,6 +419,21 @@ where
         self.endianness.read_i32(self.inner.by_ref())
     }
 
+    /// Reads a sequence of signed 32 bit integers from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    pub fn read_i32_into(&mut self, dst: &mut [i32]) -> IoResult<()> {
+        self.endianness.read_i32_into(self.inner.by_ref(), dst)
+    }
+
     /// Reads an unsigned 32 bit integer from the underlying reader.
     ///
     /// # Errors
@@ -381,6 +443,21 @@ where
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
     pub fn read_u32(&mut self) -> IoResult<u32> {
         self.endianness.read_u32(self.inner.by_ref())
+    }
+
+    /// Reads a sequence of unsigned 32 bit integers from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    pub fn read_u32_into(&mut self, dst: &mut [u32]) -> IoResult<()> {
+        self.endianness.read_u32_into(self.inner.by_ref(), dst)
     }
 
     /// Reads a signed 64 bit integer from the underlying reader.
@@ -394,6 +471,21 @@ where
         self.endianness.read_i64(self.inner.by_ref())
     }
 
+    /// Reads a sequence of signed 64 bit integers from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    pub fn read_i64_into(&mut self, dst: &mut [i64]) -> IoResult<()> {
+        self.endianness.read_i64_into(self.inner.by_ref(), dst)
+    }
+
     /// Reads an unsigned 16 bit integer from the underlying reader.
     ///
     /// # Errors
@@ -403,6 +495,21 @@ where
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
     pub fn read_u64(&mut self) -> IoResult<u64> {
         self.endianness.read_u64(self.inner.by_ref())
+    }
+
+    /// Reads a sequence of unsigned 64 bit integers from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    pub fn read_u64_into(&mut self, dst: &mut [u64]) -> IoResult<()> {
+        self.endianness.read_u64_into(self.inner.by_ref(), dst)
     }
 
     /// Reads a signed 128 bit integer from the underlying reader.
@@ -416,6 +523,21 @@ where
         self.endianness.read_i128(self.inner.by_ref())
     }
 
+    /// Reads a sequence of signed 128 bit integers from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    pub fn read_i128_into(&mut self, dst: &mut [i128]) -> IoResult<()> {
+        self.endianness.read_i128_into(self.inner.by_ref(), dst)
+    }
+
     /// Reads an unsigned 16 bit integer from the underlying reader.
     ///
     /// # Errors
@@ -425,6 +547,21 @@ where
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
     pub fn read_u128(&mut self) -> IoResult<u128> {
         self.endianness.read_u128(self.inner.by_ref())
+    }
+
+    /// Reads a sequence of unsigned 128 bit integers from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    pub fn read_u128_into(&mut self, dst: &mut [u128]) -> IoResult<()> {
+        self.endianness.read_u128_into(self.inner.by_ref(), dst)
     }
 
     /// Reads a IEEE754 single-precision (4 bytes) floating point number from
@@ -439,6 +576,22 @@ where
         self.endianness.read_f32(self.inner.by_ref())
     }
 
+    /// Reads a sequence of IEEE754 single-precision (4 bytes) floating point numbers
+    /// from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    pub fn read_f32_into(&mut self, dst: &mut [f32]) -> IoResult<()> {
+        self.endianness.read_f32_into(self.inner.by_ref(), dst)
+    }
+
     /// Reads a IEEE754 double-precision (8 bytes) floating point number from
     /// the underlying reader.
     ///
@@ -449,6 +602,22 @@ where
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
     pub fn read_f64(&mut self) -> IoResult<f64> {
         self.endianness.read_f64(self.inner.by_ref())
+    }
+
+    /// Reads a sequence of IEEE754 double-precision (8 bytes) floating point numbers
+    /// from the underlying reader.
+    ///
+    /// The given buffer is either filled completely or an error is returned.
+    /// If an error is returned,
+    /// the contents of `dst` are unspecified.
+    ///
+    /// # Errors
+    ///
+    /// This method returns the same errors as [`Read::read_exact`].
+    ///
+    /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    pub fn read_f64_into(&mut self, dst: &mut [f64]) -> IoResult<()> {
+        self.endianness.read_f64_into(self.inner.by_ref(), dst)
     }
 }
 
@@ -699,5 +868,37 @@ mod tests {
             writer.write_u64(*v).unwrap();
         }
         assert_eq!(&*writer.into_inner(), TEST_BYTES);
+    }
+
+    /// the test bytes as two u32s in little endian
+    static TEST_U32DATA_LE: &'static [u32] = &[0x7856_3412, 0x8765_4321];
+    /// the test bytes as two u32s in big endian
+    static TEST_U32DATA_BE: &'static [u32] = &[0x1234_5678, 0x2143_6587];
+
+    #[test]
+    fn test_read_u32_into() {
+        let mut data = TEST_BYTES;
+        let mut reader = ByteOrdered::le(&mut data);
+        let mut words = [0; 2];
+        reader.read_u32_into(&mut words).unwrap();
+        assert_eq!(words, TEST_U32DATA_LE);
+
+        let mut data = TEST_BYTES;
+        let mut reader = ByteOrdered::be(&mut data);
+        let mut words = [0; 2];
+        reader.read_u32_into(&mut words).unwrap();
+        assert_eq!(words, TEST_U32DATA_BE);
+
+        let mut data = TEST_BYTES;
+        let mut reader = ByteOrdered::runtime(&mut data, Endianness::Little);
+        let mut words = [0; 2];
+        reader.read_u32_into(&mut words).unwrap();
+        assert_eq!(words, TEST_U32DATA_LE);
+
+        let mut data = TEST_BYTES;
+        let mut reader = ByteOrdered::runtime(&mut data, Endianness::Big);
+        let mut words = [0; 2];
+        reader.read_u32_into(&mut words).unwrap();
+        assert_eq!(words, TEST_U32DATA_BE);
     }
 }
