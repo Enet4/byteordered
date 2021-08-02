@@ -367,12 +367,10 @@ where
     /// Read two signed 16 bit big-endian integers from a `Read`:
     ///
     /// ```rust
-    /// use std::io::Cursor;
-    /// use byteordered::ByteOrdered;
-    ///
+    /// # use byteordered::ByteOrdered;
     /// # fn run() -> std::io::Result<()> {
     /// let mut out = [0; 2];
-    /// let mut rdr = ByteOrdered::be(Cursor::new(vec![0x00, 0xc1, 0xff, 0x7c]));
+    /// let mut rdr = ByteOrdered::be(&[0x00, 0xc1, 0xff, 0x7c][..]);
     /// rdr.read_i16_into(&mut out)?;
     /// assert_eq!(out, [193, -132]);
     /// # Ok(())
