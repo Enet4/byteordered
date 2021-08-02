@@ -343,8 +343,8 @@ where
     /// assert_eq!(193, rdr.read_i16()?);
     /// assert_eq!(-132, rdr.read_i16()?);
     /// # Ok(())
-    /// }
-    /// run().unwrap();
+    /// # }
+    /// # run().unwrap();
     /// ```
     pub fn read_i16(&mut self) -> IoResult<i16> {
         self.endianness.read_i16(self.inner.by_ref())
