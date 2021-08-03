@@ -47,20 +47,25 @@ impl StaticNative for LittleEndian {
     }
 }
 
-/// General trait for types that can serialize and deserialize bytes in some
-/// byte order. It roughly resembles [`byteorder::ByteOrder`], with the
-/// exception that it is implemented for material types. This makes it possible
-/// to embed byte order information to a reader or writer by composition
-/// (which is done by [`ByteOrdered`]).
+/// General trait for types that can
+/// serialize and deserialize bytes in some byte order.
+/// 
+/// The trait roughly resembles [`byteorder::ByteOrder`],
+/// with the exception that it is implemented for material types,
+/// which are also `Copy`,
+/// and all methods receive `self`.
+/// This makes it possible to embed byte order information to a reader or writer
+/// by composition,
+/// which is done by [`ByteOrdered`].
 ///
 /// [`byteorder::ByteOrder`]: https://docs.rs/byteorder/*/byteorder/trait.ByteOrder.html
 /// [`ByteOrdered`]: struct.ByteOrdered.html
-pub trait Endian: private::Sealed {
+pub trait Endian: Copy + private::Sealed {
     /// A type which can represent a byte order that is opposite to this one.
     type Opposite;
 
     /// Checks whether this value represents the system's native endianness.
-    fn is_native(&self) -> bool;
+    fn is_native(self) -> bool;
 
     /// Converts the receiver into its opposite.
     fn into_opposite(self) -> Self::Opposite;
@@ -72,7 +77,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_i16<R>(&self, reader: R) -> IoResult<i16>
+    fn read_i16<R>(self, reader: R) -> IoResult<i16>
     where
         R: Read;
 
@@ -87,7 +92,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_i16_into<R>(&self, mut reader: R, dst: &mut [i16]) -> IoResult<()>
+    fn read_i16_into<R>(self, mut reader: R, dst: &mut [i16]) -> IoResult<()>
     where
         R: Read,
     {
@@ -104,7 +109,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_u16<R>(&self, reader: R) -> IoResult<u16>
+    fn read_u16<R>(self, reader: R) -> IoResult<u16>
     where
         R: Read;
 
@@ -119,7 +124,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_u16_into<R>(&self, mut reader: R, dst: &mut [u16]) -> IoResult<()>
+    fn read_u16_into<R>(self, mut reader: R, dst: &mut [u16]) -> IoResult<()>
     where
         R: Read,
     {
@@ -136,7 +141,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_i32<R>(&self, reader: R) -> IoResult<i32>
+    fn read_i32<R>(self, reader: R) -> IoResult<i32>
     where
         R: Read;
 
@@ -151,7 +156,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_i32_into<R>(&self, mut reader: R, dst: &mut [i32]) -> IoResult<()>
+    fn read_i32_into<R>(self, mut reader: R, dst: &mut [i32]) -> IoResult<()>
     where
         R: Read,
     {
@@ -168,7 +173,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_u32<R>(&self, reader: R) -> IoResult<u32>
+    fn read_u32<R>(self, reader: R) -> IoResult<u32>
     where
         R: Read;
 
@@ -183,7 +188,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_u32_into<R>(&self, mut reader: R, dst: &mut [u32]) -> IoResult<()>
+    fn read_u32_into<R>(self, mut reader: R, dst: &mut [u32]) -> IoResult<()>
     where
         R: Read,
     {
@@ -200,7 +205,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_i64<R>(&self, reader: R) -> IoResult<i64>
+    fn read_i64<R>(self, reader: R) -> IoResult<i64>
     where
         R: Read;
 
@@ -215,7 +220,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_i64_into<R>(&self, mut reader: R, dst: &mut [i64]) -> IoResult<()>
+    fn read_i64_into<R>(self, mut reader: R, dst: &mut [i64]) -> IoResult<()>
     where
         R: Read,
     {
@@ -232,7 +237,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_u64<R>(&self, reader: R) -> IoResult<u64>
+    fn read_u64<R>(self, reader: R) -> IoResult<u64>
     where
         R: Read;
 
@@ -247,7 +252,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_u64_into<R>(&self, mut reader: R, dst: &mut [u64]) -> IoResult<()>
+    fn read_u64_into<R>(self, mut reader: R, dst: &mut [u64]) -> IoResult<()>
     where
         R: Read,
     {
@@ -264,7 +269,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_i128<R>(&self, reader: R) -> IoResult<i128>
+    fn read_i128<R>(self, reader: R) -> IoResult<i128>
     where
         R: Read;
 
@@ -279,7 +284,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_i128_into<R>(&self, mut reader: R, dst: &mut [i128]) -> IoResult<()>
+    fn read_i128_into<R>(self, mut reader: R, dst: &mut [i128]) -> IoResult<()>
     where
         R: Read,
     {
@@ -296,7 +301,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_u128<R>(&self, reader: R) -> IoResult<u128>
+    fn read_u128<R>(self, reader: R) -> IoResult<u128>
     where
         R: Read;
 
@@ -311,7 +316,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_u128_into<R>(&self, mut reader: R, dst: &mut [u128]) -> IoResult<()>
+    fn read_u128_into<R>(self, mut reader: R, dst: &mut [u128]) -> IoResult<()>
     where
         R: Read,
     {
@@ -329,7 +334,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_f32<R>(&self, reader: R) -> IoResult<f32>
+    fn read_f32<R>(self, reader: R) -> IoResult<f32>
     where
         R: Read;
 
@@ -345,7 +350,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_f32_into<R>(&self, mut reader: R, dst: &mut [f32]) -> IoResult<()>
+    fn read_f32_into<R>(self, mut reader: R, dst: &mut [f32]) -> IoResult<()>
     where
         R: Read,
     {
@@ -363,7 +368,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_f64<R>(&self, reader: R) -> IoResult<f64>
+    fn read_f64<R>(self, reader: R) -> IoResult<f64>
     where
         R: Read;
 
@@ -379,7 +384,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
-    fn read_f64_into<R>(&self, mut reader: R, dst: &mut [f64]) -> IoResult<()>
+    fn read_f64_into<R>(self, mut reader: R, dst: &mut [f64]) -> IoResult<()>
     where
         R: Read,
     {
@@ -396,7 +401,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_i16<W>(&self, writer: W, v: i16) -> IoResult<()>
+    fn write_i16<W>(self, writer: W, v: i16) -> IoResult<()>
     where
         W: Write;
 
@@ -407,7 +412,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_u16<W>(&self, writer: W, v: u16) -> IoResult<()>
+    fn write_u16<W>(self, writer: W, v: u16) -> IoResult<()>
     where
         W: Write;
 
@@ -418,7 +423,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_i32<W>(&self, writer: W, v: i32) -> IoResult<()>
+    fn write_i32<W>(self, writer: W, v: i32) -> IoResult<()>
     where
         W: Write;
 
@@ -429,7 +434,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_u32<W>(&self, writer: W, v: u32) -> IoResult<()>
+    fn write_u32<W>(self, writer: W, v: u32) -> IoResult<()>
     where
         W: Write;
 
@@ -440,7 +445,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_i64<W>(&self, writer: W, v: i64) -> IoResult<()>
+    fn write_i64<W>(self, writer: W, v: i64) -> IoResult<()>
     where
         W: Write;
 
@@ -451,7 +456,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_u64<W>(&self, writer: W, v: u64) -> IoResult<()>
+    fn write_u64<W>(self, writer: W, v: u64) -> IoResult<()>
     where
         W: Write;
 
@@ -462,7 +467,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_i128<W>(&self, writer: W, v: i128) -> IoResult<()>
+    fn write_i128<W>(self, writer: W, v: i128) -> IoResult<()>
     where
         W: Write;
 
@@ -473,7 +478,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_u128<W>(&self, writer: W, v: u128) -> IoResult<()>
+    fn write_u128<W>(self, writer: W, v: u128) -> IoResult<()>
     where
         W: Write;
 
@@ -485,7 +490,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_f32<W>(&self, writer: W, v: f32) -> IoResult<()>
+    fn write_f32<W>(self, writer: W, v: f32) -> IoResult<()>
     where
         W: Write;
 
@@ -497,7 +502,7 @@ pub trait Endian: private::Sealed {
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
-    fn write_f64<W>(&self, writer: W, v: f64) -> IoResult<()>
+    fn write_f64<W>(self, writer: W, v: f64) -> IoResult<()>
     where
         W: Write;
 }
@@ -577,7 +582,7 @@ where
 macro_rules! fn_static_endianness_read {
     ($method:ident, $e:ty, $out:ty) => {
         #[inline]
-        fn $method<S>(&self, mut src: S) -> IoResult<$out>
+        fn $method<S>(self, mut src: S) -> IoResult<$out>
         where
             S: Read,
         {
@@ -592,7 +597,7 @@ macro_rules! fn_static_endianness_read {
 macro_rules! fn_static_endianness_read_into {
     ($method:ident, $e:ty, $out:ty) => {
         #[inline]
-        fn $method<S>(&self, mut src: S, dst: &mut [$out]) -> IoResult<()>
+        fn $method<S>(self, mut src: S, dst: &mut [$out]) -> IoResult<()>
         where
             S: Read,
         {
@@ -607,7 +612,7 @@ macro_rules! fn_static_endianness_read_into {
 macro_rules! fn_static_endianness_write {
     ($method:ident, $e:ty, $out:ty) => {
         #[inline]
-        fn $method<W>(&self, mut src: W, x: $out) -> IoResult<()>
+        fn $method<W>(self, mut src: W, x: $out) -> IoResult<()>
         where
             W: Write,
         {
@@ -630,7 +635,7 @@ where
     }
 
     #[inline]
-    fn is_native(&self) -> bool {
+    fn is_native(self) -> bool {
         E::is_native()
     }
 
@@ -668,8 +673,17 @@ where
     fn_static_endianness_write!(write_f64, E, f64);
 }
 
-/// Enumerate for materializing the two kinds of machine byte order supported
-/// by Rust.
+/// Enumerate for materializing
+/// the two kinds of machine byte order supported by Rust
+/// in a dynamic fashion.
+/// That is,
+/// the information of whether to read or write data
+/// in Little Endian or in Big Endian
+/// is resolved at run time by observing this value.
+/// 
+/// Using this type as the generic endianness type `E` in a `ByteOrdered`
+/// is useful when this information can only be retrieved
+/// from a source that is unknown to the compiler.
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, PartialOrd, Ord)]
 pub enum Endianness {
     /// Little Endian
@@ -712,11 +726,11 @@ impl PartialEq<StaticEndianness<LittleEndian>> for Endianness {
 macro_rules! fn_runtime_endianness_read {
     ($method:ident, $out:ty) => {
         #[inline]
-        fn $method<S>(&self, mut src: S) -> IoResult<$out>
+        fn $method<S>(self, mut src: S) -> IoResult<$out>
         where
             S: Read,
         {
-            match *self {
+            match self {
                 Endianness::Little => src.$method::<LittleEndian>(),
                 Endianness::Big => src.$method::<BigEndian>(),
             }
@@ -730,11 +744,11 @@ macro_rules! fn_runtime_endianness_read {
 macro_rules! fn_runtime_endianness_read_into {
     ($method:ident, $out:ty) => {
         #[inline]
-        fn $method<S>(&self, mut src: S, dst: &mut [$out]) -> IoResult<()>
+        fn $method<S>(self, mut src: S, dst: &mut [$out]) -> IoResult<()>
         where
             S: Read,
         {
-            match *self {
+            match self {
                 Endianness::Little => src.$method::<LittleEndian>(dst),
                 Endianness::Big => src.$method::<BigEndian>(dst),
             }
@@ -748,11 +762,11 @@ macro_rules! fn_runtime_endianness_read_into {
 macro_rules! fn_runtime_endianness_write {
     ($method:ident, $i:ty) => {
         #[inline]
-        fn $method<S>(&self, mut src: S, v: $i) -> IoResult<()>
+        fn $method<S>(self, mut src: S, v: $i) -> IoResult<()>
         where
             S: Write,
         {
-            match *self {
+            match self {
                 Endianness::Little => src.$method::<LittleEndian>(v),
                 Endianness::Big => src.$method::<BigEndian>(v),
             }
@@ -773,8 +787,8 @@ impl Endian for Endianness {
     }
 
     #[inline]
-    fn is_native(&self) -> bool {
-        *self == Endianness::native()
+    fn is_native(self) -> bool {
+        self == Endianness::native()
     }
 
     fn_runtime_endianness_read!(read_i16, i16);
