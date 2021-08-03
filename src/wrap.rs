@@ -175,13 +175,13 @@ where
     /// this function is only relevant when
     /// `E` is a run-time defined byte order
     /// (see [`Endianness`]).
-    /// 
+    ///
     /// [`Endianness`]: ../base/struct.Endianness.html
     #[inline]
     pub fn set_endianness(&mut self, endianness: E) {
         self.endianness = endianness;
     }
-    
+
     /// Changes the assumed byte order of the reader or writer to
     /// little endian.
     #[inline]

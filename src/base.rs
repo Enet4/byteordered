@@ -49,7 +49,7 @@ impl StaticNative for LittleEndian {
 
 /// General trait for types that can
 /// serialize and deserialize bytes in some byte order.
-/// 
+///
 /// The trait roughly resembles [`byteorder::ByteOrder`],
 /// with the exception that it is implemented for material types,
 /// which are also `Copy`,
@@ -680,7 +680,7 @@ where
 /// the information of whether to read or write data
 /// in Little Endian or in Big Endian
 /// is resolved at run time by observing this value.
-/// 
+///
 /// Using this type as the generic endianness type `E` in a `ByteOrdered`
 /// is useful when this information can only be retrieved
 /// from a source that is unknown to the compiler.
