@@ -80,10 +80,7 @@ impl<T> ByteOrdered<T, Endianness> {
 
 impl<T, E> From<(T, E)> for ByteOrdered<T, E> {
     fn from((inner, endianness): (T, E)) -> Self {
-        ByteOrdered {
-            inner,
-            endianness,
-        }
+        ByteOrdered { inner, endianness }
     }
 }
 
@@ -109,10 +106,7 @@ where
     /// [`native`]: struct.ByteOrdered.html#method.native
     /// [`runtime`]: struct.ByteOrdered.html#method.runtime
     pub fn new(inner: T, endianness: E) -> Self {
-        ByteOrdered {
-            inner,
-            endianness,
-        }
+        ByteOrdered { inner, endianness }
     }
 
     /// Recovers the inner reader or writer from this wrapper. Information

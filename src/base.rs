@@ -573,7 +573,7 @@ macro_rules! fn_static_endianness_read {
         where
             S: Read,
         {
-            src.$method::< $e >()
+            src.$method::<$e>()
         }
     };
 }
@@ -587,7 +587,7 @@ macro_rules! fn_static_endianness_read_into {
         where
             S: Read,
         {
-            src.$method::< $e >(dst)
+            src.$method::<$e>(dst)
         }
     };
 }
@@ -601,7 +601,7 @@ macro_rules! fn_static_endianness_write {
         where
             W: Write,
         {
-            src.$method::< $e >(x)
+            src.$method::<$e>(x)
         }
     };
 }
