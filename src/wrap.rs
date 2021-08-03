@@ -68,6 +68,8 @@ impl<T> ByteOrdered<T, StaticEndianness<NetworkEndian>> {
 impl<T> ByteOrdered<T, Endianness> {
     /// Creates a new reader or writer that assumes data in the given byte
     /// order known at _run-time_.
+    /// That is, the type representing the byte order
+    /// is the enum type [`Endianness`].
     ///
     /// Although it is equivalent to [`ByteOrdered::new`][`new`], this function
     /// leaves a code signal that subsequent calls depend on conditions
@@ -75,6 +77,7 @@ impl<T> ByteOrdered<T, Endianness> {
     /// time, the other constructors are preferred (e.g. [`new`], [`le`] or
     /// [`be`]), so as to avoid the overhead of dynamic dispatching.
     ///
+    /// [`Endianness`]: ../base/struct.Endianness.html
     /// [`new`]: struct.ByteOrdered.html#method.new
     /// [`le`]: struct.ByteOrdered.html#method.le
     /// [`be`]: struct.ByteOrdered.html#method.be
@@ -166,6 +169,19 @@ where
         ByteOrdered::new(self.inner, endianness)
     }
 
+    /// Modifies the assumed byte order of the reader or writer
+    /// inline with the value.
+    /// Since the endianness type needs to be the same,
+    /// this function is only relevant when
+    /// `E` is a run-time defined byte order
+    /// (see [`Endianness`]).
+    /// 
+    /// [`Endianness`]: ../base/struct.Endianness.html
+    #[inline]
+    pub fn set_endianness(&mut self, endianness: E) {
+        self.endianness = endianness;
+    }
+    
     /// Changes the assumed byte order of the reader or writer to
     /// little endian.
     #[inline]
@@ -951,5 +967,18 @@ mod tests {
         let mut words = [0; 2];
         reader.read_u32_into(&mut words).unwrap();
         assert_eq!(words, TEST_U32DATA_BE);
+    }
+
+    #[test]
+    fn test_read_u32_and_set_endianness() {
+        let mut data = TEST_BYTES;
+        let mut reader = ByteOrdered::runtime(&mut data, Endianness::Little);
+        let v1 = reader.read_u32().unwrap();
+        assert_eq!(v1, TEST_U32DATA_LE[0]);
+
+        // change to big endian
+        reader.set_endianness(Endianness::Big);
+        let v2 = reader.read_u32().unwrap();
+        assert_eq!(v2, TEST_U32DATA_BE[1]);
     }
 }
