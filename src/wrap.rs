@@ -22,6 +22,7 @@ impl<T, E> ByteOrdered<T, E>
 where
     E: Default,
 {
+    #[inline]
     fn new_default(inner: T) -> Self {
         ByteOrdered {
             inner,
@@ -32,6 +33,7 @@ where
 
 impl<T> ByteOrdered<T, StaticEndianness<LittleEndian>> {
     /// Obtains a new reader or writer that assumes data in _little endian_.
+    #[inline]
     pub fn le(inner: T) -> Self {
         ByteOrdered::new_default(inner)
     }
@@ -39,6 +41,7 @@ impl<T> ByteOrdered<T, StaticEndianness<LittleEndian>> {
 
 impl<T> ByteOrdered<T, StaticEndianness<BigEndian>> {
     /// Obtains a new reader or writer that assumes data in _big endian_.
+    #[inline]
     pub fn be(inner: T) -> Self {
         ByteOrdered::new_default(inner)
     }
@@ -48,6 +51,7 @@ impl<T> ByteOrdered<T, StaticEndianness<NativeEndian>> {
     /// Obtains a new reader or writer that assumes data in the system's
     /// _native endianness_. While this method might sounds a bit pointless,
     /// it enables easier byte order changes through method chaining).
+    #[inline]
     pub fn native(inner: T) -> Self {
         ByteOrdered::new_default(inner)
     }
@@ -55,6 +59,7 @@ impl<T> ByteOrdered<T, StaticEndianness<NativeEndian>> {
 
 impl<T> ByteOrdered<T, StaticEndianness<NetworkEndian>> {
     /// Obtains a new reader or writer that assumes _network order_.
+    #[inline]
     pub fn network(inner: T) -> Self {
         ByteOrdered::new_default(inner)
     }
@@ -73,12 +78,14 @@ impl<T> ByteOrdered<T, Endianness> {
     /// [`new`]: struct.ByteOrdered.html#method.new
     /// [`le`]: struct.ByteOrdered.html#method.le
     /// [`be`]: struct.ByteOrdered.html#method.be
+    #[inline]
     pub fn runtime(inner: T, endianness: Endianness) -> Self {
         ByteOrdered::new(inner, endianness)
     }
 }
 
 impl<T, E> From<(T, E)> for ByteOrdered<T, E> {
+    #[inline]
     fn from((inner, endianness): (T, E)) -> Self {
         ByteOrdered { inner, endianness }
     }
@@ -105,12 +112,14 @@ where
     /// [`be`]: struct.ByteOrdered.html#method.be
     /// [`native`]: struct.ByteOrdered.html#method.native
     /// [`runtime`]: struct.ByteOrdered.html#method.runtime
+    #[inline]
     pub fn new(inner: T, endianness: E) -> Self {
         ByteOrdered { inner, endianness }
     }
 
     /// Recovers the inner reader or writer from this wrapper. Information
     /// about the assumed byte order is discarded.
+    #[inline]
     pub fn into_inner(self) -> T {
         self.inner
     }
@@ -118,12 +127,14 @@ where
     /// Obtains an exclusive mutable reference to the inner reader or writer in
     /// this wrapper. Information about the assumed byte order is ignored until
     /// the reference is dropped.
+    #[inline]
     pub fn inner_mut(&mut self) -> &mut T {
         &mut self.inner
     }
 
     /// Converts from `ByteOrdered<T, E>` to `ByteOrdered<&mut T, E>`,
     /// copying the endianness information.
+    #[inline]
     pub fn as_mut(&mut self) -> ByteOrdered<&mut T, E>
     where
         E: Copy,
@@ -133,12 +144,14 @@ where
     }
 
     /// Disbands a `ByteOrder` into its parts.
+    #[inline]
     pub fn into_parts(self) -> (T, E) {
         (self.inner, self.endianness)
     }
 
     /// Maps a `ByteOrdered<T, E>` into a `ByteOrdered<O, E>` by applying the
     /// given function to the inner reader or writer.
+    #[inline]
     pub fn map<F, U>(self, f: F) -> ByteOrdered<U, E>
     where
         F: FnOnce(T) -> U,
@@ -148,29 +161,34 @@ where
     }
 
     /// Changes the assumed byte order of the reader or writer.
+    #[inline]
     pub fn into_endianness<E2: Endian>(self, endianness: E2) -> ByteOrdered<T, E2> {
         ByteOrdered::new(self.inner, endianness)
     }
 
     /// Changes the assumed byte order of the reader or writer to
     /// little endian.
+    #[inline]
     pub fn into_le(self) -> ByteOrdered<T, StaticEndianness<LittleEndian>> {
         ByteOrdered::le(self.inner)
     }
 
     /// Changes the assumed byte order of the reader or writer to
     /// little endian.
+    #[inline]
     pub fn into_be(self) -> ByteOrdered<T, StaticEndianness<BigEndian>> {
         ByteOrdered::be(self.inner)
     }
 
     /// Changes the assumed byte order of the reader or writer to
     /// the system's native endianness.
+    #[inline]
     pub fn into_native(self) -> ByteOrdered<T, StaticEndianness<NativeEndian>> {
         ByteOrdered::native(self.inner)
     }
 
     /// Converts the assumed endianness to the opposite of the current order.
+    #[inline]
     pub fn into_opposite(self) -> ByteOrdered<T, E::Opposite>
     where
         E: Endian,
@@ -183,6 +201,7 @@ where
     }
 
     /// Retrieves the byte order assumed by this wrapper.
+    #[inline]
     pub fn endianness(&self) -> E
     where
         E: Copy,
@@ -192,6 +211,7 @@ where
 
     /// Checks whether the assumed endianness is the system's native byte
     /// order.
+    #[inline]
     pub fn is_native(&self) -> bool
     where
         E: Endian,
@@ -282,6 +302,7 @@ where
     /// # }
     /// # run().unwrap();
     /// ```
+    #[inline]
     pub fn read_i8(&mut self) -> IoResult<i8> {
         ReadBytesExt::read_i8(self)
     }
@@ -313,6 +334,7 @@ where
     /// # }
     /// # run().unwrap();
     /// ```
+    #[inline]
     pub fn read_u8(&mut self) -> IoResult<u8> {
         ReadBytesExt::read_u8(self)
     }
@@ -340,6 +362,7 @@ where
     /// # }
     /// # run().unwrap();
     /// ```
+    #[inline]
     pub fn read_i16(&mut self) -> IoResult<i16> {
         self.endianness.read_i16(self.inner.by_ref())
     }
@@ -370,6 +393,7 @@ where
     /// # Ok(())
     /// # }
     /// ```
+    #[inline]
     pub fn read_i16_into(&mut self, dst: &mut [i16]) -> IoResult<()> {
         self.endianness.read_i16_into(self.inner.by_ref(), dst)
     }
@@ -381,6 +405,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_u16(&mut self) -> IoResult<u16> {
         self.endianness.read_u16(self.inner.by_ref())
     }
@@ -396,6 +421,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_u16_into(&mut self, dst: &mut [u16]) -> IoResult<()> {
         self.endianness.read_u16_into(self.inner.by_ref(), dst)
     }
@@ -407,6 +433,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_i32(&mut self) -> IoResult<i32> {
         self.endianness.read_i32(self.inner.by_ref())
     }
@@ -422,6 +449,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_i32_into(&mut self, dst: &mut [i32]) -> IoResult<()> {
         self.endianness.read_i32_into(self.inner.by_ref(), dst)
     }
@@ -433,6 +461,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_u32(&mut self) -> IoResult<u32> {
         self.endianness.read_u32(self.inner.by_ref())
     }
@@ -448,6 +477,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_u32_into(&mut self, dst: &mut [u32]) -> IoResult<()> {
         self.endianness.read_u32_into(self.inner.by_ref(), dst)
     }
@@ -459,6 +489,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_i64(&mut self) -> IoResult<i64> {
         self.endianness.read_i64(self.inner.by_ref())
     }
@@ -474,6 +505,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_i64_into(&mut self, dst: &mut [i64]) -> IoResult<()> {
         self.endianness.read_i64_into(self.inner.by_ref(), dst)
     }
@@ -485,6 +517,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_u64(&mut self) -> IoResult<u64> {
         self.endianness.read_u64(self.inner.by_ref())
     }
@@ -500,6 +533,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_u64_into(&mut self, dst: &mut [u64]) -> IoResult<()> {
         self.endianness.read_u64_into(self.inner.by_ref(), dst)
     }
@@ -511,6 +545,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_i128(&mut self) -> IoResult<i128> {
         self.endianness.read_i128(self.inner.by_ref())
     }
@@ -526,6 +561,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_i128_into(&mut self, dst: &mut [i128]) -> IoResult<()> {
         self.endianness.read_i128_into(self.inner.by_ref(), dst)
     }
@@ -537,6 +573,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_u128(&mut self) -> IoResult<u128> {
         self.endianness.read_u128(self.inner.by_ref())
     }
@@ -552,6 +589,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_u128_into(&mut self, dst: &mut [u128]) -> IoResult<()> {
         self.endianness.read_u128_into(self.inner.by_ref(), dst)
     }
@@ -564,6 +602,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_f32(&mut self) -> IoResult<f32> {
         self.endianness.read_f32(self.inner.by_ref())
     }
@@ -580,6 +619,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_f32_into(&mut self, dst: &mut [f32]) -> IoResult<()> {
         self.endianness.read_f32_into(self.inner.by_ref(), dst)
     }
@@ -592,6 +632,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_f64(&mut self) -> IoResult<f64> {
         self.endianness.read_f64(self.inner.by_ref())
     }
@@ -608,6 +649,7 @@ where
     /// This method returns the same errors as [`Read::read_exact`].
     ///
     /// [`Read::read_exact`]: https://doc.rust-lang.org/std/io/trait.Read.html#method.read_exact
+    #[inline]
     pub fn read_f64_into(&mut self, dst: &mut [f64]) -> IoResult<()> {
         self.endianness.read_f64_into(self.inner.by_ref(), dst)
     }
@@ -628,6 +670,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_i8(&mut self, x: i8) -> IoResult<()> {
         self.inner.write_i8(x)
     }
@@ -642,6 +685,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_u8(&mut self, x: u8) -> IoResult<()> {
         self.inner.write_u8(x)
     }
@@ -666,6 +710,7 @@ where
     /// wtr.write_i16(-132).unwrap();
     /// assert_eq!(wtr.into_inner(), b"\x00\xc1\xff\x7c");
     /// ```
+    #[inline]
     pub fn write_i16(&mut self, x: i16) -> IoResult<()> {
         self.endianness.write_i16(self.inner.by_ref(), x)
     }
@@ -677,6 +722,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_u16(&mut self, x: u16) -> IoResult<()> {
         self.endianness.write_u16(self.inner.by_ref(), x)
     }
@@ -688,6 +734,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_i32(&mut self, x: i32) -> IoResult<()> {
         self.endianness.write_i32(self.inner.by_ref(), x)
     }
@@ -699,6 +746,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_u32(&mut self, x: u32) -> IoResult<()> {
         self.endianness.write_u32(self.inner.by_ref(), x)
     }
@@ -710,6 +758,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_i64(&mut self, x: i64) -> IoResult<()> {
         self.endianness.write_i64(self.inner.by_ref(), x)
     }
@@ -721,6 +770,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_u64(&mut self, x: u64) -> IoResult<()> {
         self.endianness.write_u64(self.inner.by_ref(), x)
     }
@@ -732,6 +782,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_i128(&mut self, x: i128) -> IoResult<()> {
         self.endianness.write_i128(self.inner.by_ref(), x)
     }
@@ -743,6 +794,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_u128(&mut self, x: u128) -> IoResult<()> {
         self.endianness.write_u128(self.inner.by_ref(), x)
     }
@@ -755,6 +807,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_f32(&mut self, x: f32) -> IoResult<()> {
         self.endianness.write_f32(self.inner.by_ref(), x)
     }
@@ -767,6 +820,7 @@ where
     /// This method returns the same errors as [`Write::write_all`].
     ///
     /// [`Write::write_all`]: https://doc.rust-lang.org/std/io/trait.Write.html#method.write_all
+    #[inline]
     pub fn write_f64(&mut self, x: f64) -> IoResult<()> {
         self.endianness.write_f64(self.inner.by_ref(), x)
     }
@@ -776,18 +830,22 @@ impl<T, E> BufRead for ByteOrdered<T, E>
 where
     T: BufRead,
 {
+    #[inline]
     fn fill_buf(&mut self) -> IoResult<&[u8]> {
         self.inner.fill_buf()
     }
 
+    #[inline]
     fn consume(&mut self, amt: usize) {
         self.inner.consume(amt)
     }
 
+    #[inline]
     fn read_until(&mut self, byte: u8, buf: &mut Vec<u8>) -> IoResult<usize> {
         self.inner.read_until(byte, buf)
     }
 
+    #[inline]
     fn read_line(&mut self, buf: &mut String) -> IoResult<usize> {
         self.inner.read_line(buf)
     }
@@ -797,6 +855,7 @@ impl<T, E> Seek for ByteOrdered<T, E>
 where
     T: Seek,
 {
+    #[inline]
     fn seek(&mut self, pos: SeekFrom) -> IoResult<u64> {
         self.inner.seek(pos)
     }

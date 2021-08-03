@@ -514,6 +514,7 @@ pub trait Endian: private::Sealed {
 pub struct StaticEndianness<E>(PhantomData<E>);
 
 impl<E> Default for StaticEndianness<E> {
+    #[inline]
     fn default() -> Self {
         StaticEndianness::new()
     }
@@ -521,6 +522,7 @@ impl<E> Default for StaticEndianness<E> {
 
 impl<E> StaticEndianness<E> {
     /// Constructor for a static endianness.
+    #[inline]
     pub fn new() -> Self {
         StaticEndianness(PhantomData)
     }
@@ -528,30 +530,35 @@ impl<E> StaticEndianness<E> {
 
 impl StaticEndianness<NativeEndian> {
     /// Constructor for native endianness.
+    #[inline]
     pub fn native() -> Self {
         StaticEndianness::new()
     }
 }
 
 impl PartialEq<StaticEndianness<LittleEndian>> for StaticEndianness<BigEndian> {
+    #[inline]
     fn eq(&self, _: &StaticEndianness<LittleEndian>) -> bool {
         false
     }
 }
 
 impl PartialEq<StaticEndianness<BigEndian>> for StaticEndianness<LittleEndian> {
+    #[inline]
     fn eq(&self, _: &StaticEndianness<BigEndian>) -> bool {
         false
     }
 }
 
 impl PartialEq<Endianness> for StaticEndianness<BigEndian> {
+    #[inline]
     fn eq(&self, e: &Endianness) -> bool {
         *e == Endianness::Big
     }
 }
 
 impl PartialEq<Endianness> for StaticEndianness<LittleEndian> {
+    #[inline]
     fn eq(&self, e: &Endianness) -> bool {
         *e == Endianness::Little
     }
@@ -569,6 +576,7 @@ where
 /// by delegating a call to the same method on `ReadBytesExt`.
 macro_rules! fn_static_endianness_read {
     ($method:ident, $e:ty, $out:ty) => {
+        #[inline]
         fn $method<S>(&self, mut src: S) -> IoResult<$out>
         where
             S: Read,
@@ -583,6 +591,7 @@ macro_rules! fn_static_endianness_read {
 /// by delegating a call to the same method on `ReadBytesExt`.
 macro_rules! fn_static_endianness_read_into {
     ($method:ident, $e:ty, $out:ty) => {
+        #[inline]
         fn $method<S>(&self, mut src: S, dst: &mut [$out]) -> IoResult<()>
         where
             S: Read,
@@ -597,6 +606,7 @@ macro_rules! fn_static_endianness_read_into {
 /// by delegating a call to the same method on `WriteBytesExt`.
 macro_rules! fn_static_endianness_write {
     ($method:ident, $e:ty, $out:ty) => {
+        #[inline]
         fn $method<W>(&self, mut src: W, x: $out) -> IoResult<()>
         where
             W: Write,
@@ -614,10 +624,12 @@ where
 {
     type Opposite = StaticEndianness<E::Opposite>;
 
+    #[inline]
     fn into_opposite(self) -> Self::Opposite {
         StaticEndianness(PhantomData)
     }
 
+    #[inline]
     fn is_native(&self) -> bool {
         E::is_native()
     }
@@ -667,24 +679,28 @@ pub enum Endianness {
 }
 
 impl From<StaticEndianness<LittleEndian>> for Endianness {
+    #[inline]
     fn from(_: StaticEndianness<LittleEndian>) -> Self {
         Endianness::Little
     }
 }
 
 impl From<StaticEndianness<BigEndian>> for Endianness {
+    #[inline]
     fn from(_: StaticEndianness<BigEndian>) -> Self {
         Endianness::Big
     }
 }
 
 impl PartialEq<StaticEndianness<BigEndian>> for Endianness {
+    #[inline]
     fn eq(&self, _: &StaticEndianness<BigEndian>) -> bool {
         *self == Endianness::Big
     }
 }
 
 impl PartialEq<StaticEndianness<LittleEndian>> for Endianness {
+    #[inline]
     fn eq(&self, _: &StaticEndianness<LittleEndian>) -> bool {
         *self == Endianness::Little
     }
@@ -695,6 +711,7 @@ impl PartialEq<StaticEndianness<LittleEndian>> for Endianness {
 /// by delegating a call to the same method on `ReadBytesExt`.
 macro_rules! fn_runtime_endianness_read {
     ($method:ident, $out:ty) => {
+        #[inline]
         fn $method<S>(&self, mut src: S) -> IoResult<$out>
         where
             S: Read,
@@ -712,6 +729,7 @@ macro_rules! fn_runtime_endianness_read {
 /// by delegating a call to the same method on `ReadBytesExt`.
 macro_rules! fn_runtime_endianness_read_into {
     ($method:ident, $out:ty) => {
+        #[inline]
         fn $method<S>(&self, mut src: S, dst: &mut [$out]) -> IoResult<()>
         where
             S: Read,
@@ -729,6 +747,7 @@ macro_rules! fn_runtime_endianness_read_into {
 /// by delegating a call to the same method on `WriteBytesExt`.
 macro_rules! fn_runtime_endianness_write {
     ($method:ident, $i:ty) => {
+        #[inline]
         fn $method<S>(&self, mut src: S, v: $i) -> IoResult<()>
         where
             S: Write,
@@ -748,10 +767,12 @@ impl HasOpposite for Endianness {
 impl Endian for Endianness {
     type Opposite = Self;
 
+    #[inline]
     fn into_opposite(self) -> Self::Opposite {
         self.to_opposite()
     }
 
+    #[inline]
     fn is_native(&self) -> bool {
         *self == Endianness::native()
     }
