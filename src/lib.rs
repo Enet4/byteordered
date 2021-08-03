@@ -189,7 +189,7 @@ pub use wrap::ByteOrdered;
 /// runtime-bound `ByteOrdered` with a sequence of reads/writes would expand
 /// into one check for each method call:
 ///
-/// ```no_run
+/// ```
 /// # use byteordered::{ByteOrdered, Endianness};
 /// # fn get_endianness() -> Endianness { Endianness::Little }
 /// # fn run() -> Result<(), ::std::io::Error> {
